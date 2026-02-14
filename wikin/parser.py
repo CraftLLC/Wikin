@@ -1,3 +1,6 @@
+"""
+Parser module for Wikin. Handles AST analysis of Python files.
+"""
 import ast
 import os
 import re
@@ -83,10 +86,12 @@ class WikinParser:
             # Normalize module name
             module_name = str(rel_path).replace("\\", ".").replace("/", ".").replace(".py", "")
             
-            if module_name == "__init__":
-                module_name = root_path.name
+            if module_name == "__init__" or module_name == "":
+                module_name = root_path.resolve().name
             elif module_name.endswith(".__init__"):
                 module_name = module_name[:-9]
+            
+            print(f"Parsing module: {module_name} ({rel_path})")
             
             try:
                 module_doc = self._parse_file(str(full_path), module_name)

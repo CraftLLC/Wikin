@@ -1,3 +1,6 @@
+"""
+Generator module for Wikin. Handles HTML generation from documentation data.
+"""
 import os
 import markdown
 from typing import List

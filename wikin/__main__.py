@@ -1,3 +1,6 @@
+"""
+CLI entry point for Wikin.
+"""
 import sys
 import os
 from .parser import WikinParser
