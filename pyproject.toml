@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "craftllc-wikin"
+version = "1.0.2"
+description = "A simple documentation generator for Python"
+readme = "README.md"
+authors = [
+    { name = "CraftLLC", email = "craftllcompany@gmail.com" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "markdown",
+    "pygments",
+]
+
+[project.scripts]
+wikin = "wikin.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["wikin"]
