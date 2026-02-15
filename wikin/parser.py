@@ -4,6 +4,8 @@ Parser module for Wikin. Handles AST analysis of Python files.
 import ast
 import os
 import re
+import tokenize
+import io
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
@@ -148,61 +150,87 @@ class WikinParser:
                 if class_info.docstring or class_info.methods:
                     module_doc.classes.append(class_info)
 
-        # Extract variables with #: docstrings
-        # We need to scan the lines for #: comments
-        lines = source.splitlines()
-        
-        # Two types of variable docs:
-        # Type 1: #: Doc before\nvar = val
-        # Type 2: var = val #: Doc after
-        
-        for i, line in enumerate(lines):
-            stripped = line.strip()
+        # Extract variables with #: docstrings using tokenize
+        try:
+            tokens = list(tokenize.generate_tokens(io.StringIO(source).readline))
             
-            # Skip lines that are just string literals containing #: (like in our own code)
-            if 'if "#:" in line' in line or 'line.split("#:", 1)' in line:
-                continue
-
             # Type 2: Post-comment (e.g., var = val #: comment)
-            if "#:" in line and "=" in line:
-                # Basic check to avoid matching #: inside strings
-                # This is a bit naive but covers many cases
-                parts = line.split("#:", 1)
-                code_part = parts[0].strip()
-                comment_part = parts[1].strip()
-                
-                if "=" in code_part and not code_part.startswith("#"):
-                    var_name_part = code_part.split("=", 1)[0].strip()
-                    # Check if it's a simple name
-                    if re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', var_name_part):
+            # Find assignments followed by #: comment on the same line
+            for i, tok in enumerate(tokens):
+                if tok.type == tokenize.COMMENT and tok.string.startswith("#:"):
+                    comment_text = tok.string[2:].strip()
+                    row, col = tok.start
+                    
+                    # Search backwards on the same line for an assignment
+                    # We expect: NAME = VALUE (maybe multiple tokens for value) #: COMMENT
+                    j = i - 1
+                    found_assignment = False
+                    var_name = None
+                    var_value_tokens = []
+                    
+                    while j >= 0 and tokens[j].start[0] == row:
+                        if tokens[j].type == tokenize.OP and tokens[j].string == "=":
+                            found_assignment = True
+                            # The thing before '=' should be the name
+                            if j > 0 and tokens[j-1].type == tokenize.NAME:
+                                var_name = tokens[j-1].string
+                            break
+                        var_value_tokens.insert(0, tokens[j].string)
+                        j -= 1
+                    
+                    if found_assignment and var_name:
+                        # Extract the value string from tokens
+                        val_str = "".join(var_value_tokens).strip()
                         module_doc.variables.append(VariableDoc(
-                            name=var_name_part,
-                            value=code_part.split("=", 1)[1].strip(),
-                            docstring=comment_part
+                            name=var_name,
+                            value=val_str,
+                            docstring=comment_text
                         ))
                         continue
 
-            # Type 1: Pre-comment (e.g., #: comment\nvar = val)
-            if stripped.startswith("#:"):
-                comment = stripped[2:].strip()
-                # Look at next line(s) for assignment
-                next_idx = i + 1
-                while next_idx < len(lines):
-                    next_line = lines[next_idx].strip()
-                    if not next_line or next_line.startswith("#"):
-                        next_idx += 1
+                # Type 1: Pre-comment (e.g., #: comment\nvar = val)
+                if tok.type == tokenize.COMMENT and tok.string.startswith("#:"):
+                    comment_text = tok.string[2:].strip()
+                    row, col = tok.start
+                    
+                    # Search forward for the next NAME = ...
+                    # Skip NEWLINE, NL, and other comments
+                    j = i + 1
+                    found_var = False
+                    while j < len(tokens):
+                        t = tokens[j]
+                        if t.type in (tokenize.NEWLINE, tokenize.NL, tokenize.INDENT, tokenize.DEDENT):
+                            j += 1
+                            continue
+                        if t.type == tokenize.COMMENT:
+                            # If we hit another comment, then this pre-comment applies to nothing or we chain?
+                            # For now, let's say it stops.
+                            break
+                        
+                        # Check for NAME =
+                        if t.type == tokenize.NAME:
+                            var_name = t.string
+                            if j + 1 < len(tokens) and tokens[j+1].type == tokenize.OP and tokens[j+1].string == "=":
+                                # Found it!
+                                # Now get the value (until NEWLINE)
+                                val_tokens = []
+                                k = j + 2
+                                while k < len(tokens) and tokens[k].type not in (tokenize.NEWLINE, tokenize.NL, tokenize.COMMENT):
+                                    val_tokens.append(tokens[k].string)
+                                    k += 1
+                                
+                                module_doc.variables.append(VariableDoc(
+                                    name=var_name,
+                                    value="".join(val_tokens).strip(),
+                                    docstring=comment_text
+                                ))
+                                found_var = True
+                                break
+                        break
+                    if found_var:
                         continue
-                    if "=" in next_line:
-                        var_name_part = next_line.split("=", 1)[0].strip()
-                        if re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', var_name_part):
-                            module_doc.variables.append(VariableDoc(
-                                name=var_name_part,
-                                value=next_line.split("=", 1)[1].strip(),
-                                docstring=comment
-                            ))
-                        break
-                    else:
-                        break
+        except Exception as e:
+            print(f"Warning: Tokenize failed for {file_path}: {e}")
 
         return module_doc
 
