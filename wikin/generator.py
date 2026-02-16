@@ -1,3 +1,10 @@
+"""
+Wikin:
+    name: Generator
+
+Generates HTML documentation from parsed module data.
+"""
+
 import os
 import markdown
 import jinja2

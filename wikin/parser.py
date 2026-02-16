@@ -1,4 +1,7 @@
 """
+Wikin:
+    name: Parser
+
 Parser module for Wikin. Handles AST analysis of Python files.
 """
 import ast
@@ -123,10 +126,13 @@ class WikinParser:
         except SyntaxError:
             return ModuleDoc(name=module_name, path=file_path)
 
+        raw_docstring = ast.get_docstring(tree)
+        display_name, cleaned_docstring = self._extract_metadata(raw_docstring, module_name)
+
         module_doc = ModuleDoc(
-            name=module_name,
+            name=display_name,
             path=file_path,
-            docstring=ast.get_docstring(tree)
+            docstring=cleaned_docstring
         )
 
         # Extract classes and functions
@@ -233,6 +239,43 @@ class WikinParser:
             print(f"Warning: Tokenize failed for {file_path}: {e}")
 
         return module_doc
+
+    def _extract_metadata(self, docstring: str, original_name: str) -> tuple[str, Optional[str]]:
+        """
+        Extracts Wikin-specific metadata from the module docstring.
+        
+        Args:
+            docstring: The raw module docstring.
+            original_name: The default dot-separated module name.
+            
+        Returns:
+            tuple: (display_name, cleaned_docstring)
+        """
+        if not docstring:
+            return original_name, docstring
+        
+        # Look for Wikin: block
+        # Pattern matches "Wikin:" followed by indented lines
+        pattern = r'(Wikin:\s*\n(?:\s+.*\n?)*)'
+        match = re.search(pattern, docstring)
+        
+        display_name = original_name
+        new_docstring = docstring
+        
+        if match:
+            wikin_block = match.group(1)
+            # Find 'name:' inside the block
+            name_match = re.search(r'name:\s*(.*)', wikin_block)
+            if name_match:
+                custom_name = name_match.group(1).strip()
+                display_name = f"{custom_name} ({original_name})"
+            
+            # Remove the metadata block from the docstring
+            new_docstring = docstring.replace(wikin_block, "").strip()
+            if not new_docstring:
+                new_docstring = None
+            
+        return display_name, new_docstring
 
     def _parse_function(self, node: ast.FunctionDef) -> FunctionDoc:
         """

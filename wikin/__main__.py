@@ -1,4 +1,7 @@
 """
+Wikin:
+   name: CLI Entry Point
+
 CLI entry point for Wikin.
 """
 import sys

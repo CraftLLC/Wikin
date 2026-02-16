@@ -10,25 +10,24 @@ A simple, beautiful documentation generator for Python. It extracts docstrings f
   - `variable = value #: comment after variable`
 - **Modern UI**: Clean, responsive HTML output with a premium look.
 - **Markdown Support**: Use Markdown in your docstrings and comments.
+- **Module Metadata**: Customize how modules appear in the documentation using a `Wikin:` block.
 
 ## Installation
 
 ```bash
-pip install .
+pip install craftllc-wikin
 ```
 
 ## Usage
 
-Run Wikin as a module:
-
 ```bash
-python -m wikin <path_to_code> <project_name> <version>
+wikin <path_to_code> <project_name> <version>
 ```
 
 Example:
 
 ```bash
-python -m wikin ./ "My Project" 1.0.0
+wikin ./ "My Project" 1.0.0
 ```
 
 This will generate documentation in the `docs/index.html` file.
@@ -43,3 +42,18 @@ timeout = 30 #: Connection timeout in seconds
 ```
 
 Wikin will pick these up and include them in the generated documentation.
+
+## Module Metadata Example
+
+You can set a custom display name for your modules by adding a `Wikin:` block at the top of your module's docstring:
+
+```python
+"""
+Wikin:
+    name: Core Parser
+
+This module handles all the parsing logic for Wikin.
+"""
+```
+
+In the documentation, this module will be titled as **Core Parser (your_package.parser)**. The metadata block itself will be hidden from the module's description.
