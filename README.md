@@ -43,6 +43,23 @@ timeout = 30 #: Connection timeout in seconds
 
 Wikin will pick these up and include them in the generated documentation.
 
+## Ignoring Files
+
+To exclude specific files or directories from being processed, create a `.wikinignore` file in your `docs/` folder. It supports standard `.gitignore` (gitwildmatch) patterns.
+
+**Example `docs/.wikinignore`:**
+
+```text
+# Ignore a specific file
+secret_module.py
+
+# Ignore an entire directory
+internal_tools/
+
+# Ignore all files with a certain extension
+*.deprecated.py
+```
+
 ## Module Metadata Example
 
 You can set a custom display name for your modules by adding a `Wikin:` block at the top of your module's docstring:

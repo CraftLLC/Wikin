@@ -9,6 +9,7 @@ import os
 import re
 import tokenize
 import io
+import pathspec
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
@@ -53,6 +54,20 @@ class WikinParser:
         """
         self.root_dir = os.path.abspath(root_dir)
         self.modules: List[ModuleDoc] = []
+        self.ignore_spec = self._load_ignore_spec()
+
+    def _load_ignore_spec(self) -> Optional[pathspec.PathSpec]:
+        """
+        Loads ignore patterns from docs/.wikinignore if it exists.
+        """
+        ignore_file = Path(os.getcwd()) / "docs" / ".wikinignore"
+        if ignore_file.exists():
+            try:
+                with open(ignore_file, "r", encoding="utf-8") as f:
+                    return pathspec.PathSpec.from_lines('gitwildmatch', f)
+            except Exception as e:
+                print(f"Warning: Could not read {ignore_file}: {e}")
+        return None
 
     def parse(self):
         """
@@ -77,6 +92,14 @@ class WikinParser:
                 if any(part.startswith('.') for part in path.parts) or \
                    any(part in ('__pycache__', 'venv', 'env', 'dist', 'build') for part in path.parts):
                     continue
+                
+                # Skip files matched by .wikinignore
+                if self.ignore_spec:
+                    # Match relative to the root_dir being scanned
+                    rel_to_root = path.relative_to(root_path)
+                    if self.ignore_spec.match_file(str(rel_to_root)):
+                        continue
+                        
                 py_files.append(path)
 
         if not py_files:
