@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.2.4 - Documentation</title>
+    <title>Wikin v1.2.5 - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -46,6 +46,7 @@
             top: 0;
             height: 100vh;
             overflow-y: auto;
+            z-index: 50;
         }
 
         .brand {
@@ -53,6 +54,14 @@
             font-weight: 700;
             margin-bottom: 2rem;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .brand a {
+            text-decoration: none;
+            color: inherit;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -237,6 +246,63 @@
             transform: translateY(-50%);
             color: var(--text-muted);
             pointer-events: none;
+            z-index: 10;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .search-result-item {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .search-result-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+            display: block;
+        }
+
+        .search-result-type {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+
+        .search-result-module {
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+            display: block;
         }
 
         /* Responsive */
@@ -282,7 +348,7 @@
 <body>
     <aside>
         <div class="brand">
-            Wikin <span class="version">v1.2.4</span>
+            <a href="./index.html">Wikin <span class="version">v1.2.5</span></a>
         </div>
         
         
@@ -301,17 +367,33 @@
         
         <div class="search-container">
             <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="wikin-search" class="search-input" placeholder="Search (names, docs, code)...">
+            <input type="text" id="wikin-search" class="search-input" placeholder="Search across all modules..." autocomplete="off">
+            <div id="search-results" class="search-results"></div>
         </div>
 
         <nav>
             <ul id="sidebar-list">
                 
-                <li data-name="CLI Entry Point (wikin.__main__)"><a href="#CLI Entry Point (wikin-__main__)">CLI Entry Point (wikin.__main__)</a></li>
+                <li data-name="CLI Entry Point (wikin.__main__)">
+                    <a href="modules/wikin.__main__.html" 
+                       class="">
+                        CLI Entry Point (wikin.__main__)
+                    </a>
+                </li>
                 
-                <li data-name="Generator (wikin.generator)"><a href="#Generator (wikin-generator)">Generator (wikin.generator)</a></li>
+                <li data-name="Generator (wikin.generator)">
+                    <a href="modules/wikin.generator.html" 
+                       class="">
+                        Generator (wikin.generator)
+                    </a>
+                </li>
                 
-                <li data-name="Parser (wikin.parser)"><a href="#Parser (wikin-parser)">Parser (wikin.parser)</a></li>
+                <li data-name="Parser (wikin.parser)">
+                    <a href="modules/wikin.parser.html" 
+                       class="">
+                        Parser (wikin.parser)
+                    </a>
+                </li>
                 
             </ul>
         </nav>
@@ -330,365 +412,223 @@
         
         <div id="content-wrapper">
             
-            <section id="CLI Entry Point (wikin-__main__)" class="doc-section" data-name="CLI Entry Point (wikin.__main__)">
-                <h2>Module: CLI Entry Point (wikin.__main__)</h2>
-                
-                
-                
-                
-
-                
-                <div class="category-header"><h3>Functions</h3></div>
-                
-                <div class="item" data-name="main">
-                    <div class="item-header">
-                        <div>
-                            <span class="item-name searchable">main</span>
-                            <span class="item-type">function</span>
-                        </div>
-                    </div>
-                    <code class="signature searchable">main()</code>
-                    
-                    <div class="item-doc searchable"><p>Main entry point for the Wikin CLI tool.
-Parses command line arguments and initiates documentation generation.</p></div>
-                    
-                </div>
-                
-                
-
-                
-                
-            </section>
             
-            <section id="Generator (wikin-generator)" class="doc-section" data-name="Generator (wikin.generator)">
-                <h2>Module: Generator (wikin.generator)</h2>
-                
-                
-                
-                
-                <div class="category-header"><h3>Classes</h3></div>
-                
-                <div class="item" data-name="WikinGenerator">
-                    <div class="item-header">
-                        <div>
-                            <span class="item-name searchable">WikinGenerator</span>
-                            <span class="item-type">class</span>
-                        </div>
-                    </div>
-                    
-                    <div class="item-doc searchable"><p>Generates a premium-look HTML documentation from parsed module data.</p></div>
-                    
-                    
-                    
-                    <div class="sub-item" data-name="__init__" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">__init__</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, project_name, version)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the generator with project metadata.</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="generate" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">generate</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">generate(self, modules)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Transforms a list of ModuleDoc objects into a single HTML string.</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="save" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">save</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">save(self, html, output_path)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Saves the generated HTML to the specified file path.</p></div>
-                        
-                    </div>
-                    
-                </div>
-                
-                
-
-                
-
-                
-                
-            </section>
             
-            <section id="Parser (wikin-parser)" class="doc-section" data-name="Parser (wikin.parser)">
-                <h2>Module: Parser (wikin.parser)</h2>
-                
-                
-                
-                
-                <div class="category-header"><h3>Classes</h3></div>
-                
-                <div class="item" data-name="ModuleDoc">
-                    <div class="item-header">
-                        <div>
-                            <span class="item-name searchable">ModuleDoc</span>
-                            <span class="item-type">class</span>
-                        </div>
-                    </div>
+            <div class="welcome-section" style="text-align: center; padding: 4rem 0;">
+                <h2 style="border: none;">Welcome to Wikin Documentation</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem;">
+                    Please select a module from the sidebar to view its detailed documentation.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; text-align: left;">
                     
-                    <div class="item-doc searchable"><p>Holds documentation data for a single Python module.</p></div>
+                    <a href="modules/wikin.__main__.html" class="item" style="text-decoration: none; color: inherit; display: block;">
+                        <span class="item-name">CLI Entry Point (wikin.__main__)</span>
+                    </a>
                     
+                    <a href="modules/wikin.generator.html" class="item" style="text-decoration: none; color: inherit; display: block;">
+                        <span class="item-name">Generator (wikin.generator)</span>
+                    </a>
                     
-                    
-                </div>
-                
-                <div class="item" data-name="WikinParser">
-                    <div class="item-header">
-                        <div>
-                            <span class="item-name searchable">WikinParser</span>
-                            <span class="item-type">class</span>
-                        </div>
-                    </div>
-                    
-                    <div class="item-doc searchable"><p>A parser that scans Python files for docstrings and specially formatted variable comments.</p></div>
-                    
-                    
-                    
-                    <div class="sub-item" data-name="__init__" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">__init__</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, root_dir)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the parser with a root directory or a single file path.</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="_load_ignore_spec" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">_load_ignore_spec</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_load_ignore_spec(self)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Loads ignore patterns from docs/.wikinignore if it exists.</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="parse" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">parse</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">parse(self)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Perform a recursive search for Python files and extract documentation from them.</p>
-<p>Returns:
-    List[ModuleDoc]: A list of documented modules found.</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="_parse_file" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">_parse_file</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_file(self, file_path, module_name)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Parses a single Python file using the ast module.</p>
-<p>Args:
-    file_path: Path to the .py file.
-    module_name: Dot-separated module name.</p>
-<p>Returns:
-    ModuleDoc containing extracted documentation.</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="_extract_metadata" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">_extract_metadata</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_extract_metadata(self, docstring, original_name)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Extracts Wikin-specific metadata from the module docstring.</p>
-<p>Args:
-    docstring: The raw module docstring.
-    original_name: The default dot-separated module name.</p>
-<p>Returns:
-    tuple: (display_name, cleaned_docstring)</p></div>
-                        
-                    </div>
-                    
-                    <div class="sub-item" data-name="_parse_function" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
-                        <div class="item-header">
-                            <span class="item-name searchable" style="font-size: 0.9rem;">_parse_function</span>
-                            <span class="item-type" style="font-size: 0.6rem;">method</span>
-                        </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_function(self, node)</code>
-                        
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Internal helper to create a FunctionDoc from an AST node.</p></div>
-                        
-                    </div>
+                    <a href="modules/wikin.parser.html" class="item" style="text-decoration: none; color: inherit; display: block;">
+                        <span class="item-name">Parser (wikin.parser)</span>
+                    </a>
                     
                 </div>
-                
-                
-
-                
-
-                
-                
-            </section>
+            </div>
             
         </div>
     </main>
+    <script src="./search_index.js"></script>
     <script>
         const searchInput = document.getElementById('wikin-search');
+        const resultsDropdown = document.getElementById('search-results');
         const sections = document.querySelectorAll('.doc-section');
         const sidebarItems = document.querySelectorAll('#sidebar-list li');
-        const noResults = document.getElementById('no-results');
         
-        // Cache original content for highlighting
-        const searchables = document.querySelectorAll('.searchable');
-        const originalContent = new Map();
-        searchables.forEach((el, i) => {
-            originalContent.set(el, el.innerHTML);
-        });
+        const base_url = "./";
+        const multipage = true;
+        let modulesLoaded = false;
+        let loadingPromise = null;
 
-        function highlight(el, query) {
-            const original = originalContent.get(el);
-            if (!query) {
-                el.innerHTML = original;
-                return false;
-            }
-            
-            // Simple regex for highlighting while avoiding breaking HTML tags
-            // This is a partial solution (doesn't handle nested tags well)
-            // But good enough for docstrings and names
-            const regex = new RegExp(`(${query})`, 'gi');
-            let hasMatch = false;
-            
-            // To avoid matching inside HTML tags, we do a text nodes replacement
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = original;
-            
-            const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT);
-            const nodes = [];
-            let node;
-            while((node = walker.nextNode())) {
-                nodes.push(node);
-            }
-            
-            nodes.forEach(node => {
-                const text = node.nodeValue;
-                if (text && regex.test(text)) {
-                    hasMatch = true;
-                    const span = document.createElement('span');
-                    span.innerHTML = text.replace(regex, '<span class="highlight">$1</span>');
-                    node.parentNode.replaceChild(span, node);
-                }
-            });
-            
-            el.innerHTML = tempDiv.innerHTML;
-            return hasMatch;
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\\\\\\\$&")})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
         }
 
-        let searchTimeout;
+        async function loadAllModules() {
+            if (modulesLoaded) return;
+            if (loadingPromise) return loadingPromise;
+
+            const manifest = window.WIKIN_MANIFEST;
+            if (!manifest || !multipage) {
+                modulesLoaded = true;
+                return;
+            }
+
+            loadingPromise = Promise.all(manifest.modules.map(mod => {
+                return new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = `${base_url}modules/${mod.original_name}.data.js`;
+                    script.onload = resolve;
+                    script.onerror = resolve; // Continue even if one fails
+                    document.head.appendChild(script);
+                });
+            })).then(() => {
+                modulesLoaded = true;
+            });
+
+            return loadingPromise;
+        }
+
+        async function performGlobalSearch(query) {
+            await loadAllModules();
+            
+            let searchIndex = window.WIKIN_SEARCH_INDEX;
+            const manifest = window.WIKIN_MANIFEST;
+
+            // If multipage, construct searchIndex from window.WIKIN_MODULE_... variables
+            if (multipage && manifest) {
+                searchIndex = {
+                    modules: manifest.modules.map(m => {
+                        const varName = `WIKIN_MODULE_${m.original_name.replace(/\./g, '_')}`;
+                        return window[varName];
+                    }).filter(m => !!m)
+                };
+            }
+
+            if (!searchIndex || !query) {
+                resultsDropdown.style.display = 'none';
+                return;
+            }
+
+            const results = [];
+            const q = query.toLowerCase();
+
+            searchIndex.modules.forEach(mod => {
+                const modId = mod.original_name.replace(/\./g, '-');
+                const modUrl = multipage ? `${base_url}modules/${mod.original_name}.html` : `#${modId}`;
+                
+                // Check module
+                if (mod.name.toLowerCase().includes(q) || (mod.docstring && mod.docstring.toLowerCase().includes(q))) {
+                    results.push({
+                        type: 'module',
+                        name: mod.name,
+                        module: mod.name,
+                        url: modUrl,
+                        score: mod.name.toLowerCase().includes(q) ? 10 : 1
+                    });
+                }
+
+                // Check classes
+                mod.classes.forEach(cls => {
+                    const clsId = `${modId}-${cls.name}`;
+                    const clsUrl = `${modUrl}#${clsId}`;
+                    if (cls.name.toLowerCase().includes(q) || (cls.docstring && cls.docstring.toLowerCase().includes(q))) {
+                        results.push({
+                            type: 'class',
+                            name: cls.name,
+                            module: mod.name,
+                            url: clsUrl,
+                            score: cls.name.toLowerCase().includes(q) ? 8 : 1
+                        });
+                    }
+                    if (cls.methods) {
+                        cls.methods.forEach(method => {
+                            const methodId = `${clsId}-${method.name}`;
+                            if (method.name.toLowerCase().includes(q) || (method.docstring && method.docstring.toLowerCase().includes(q))) {
+                                results.push({
+                                    type: 'method',
+                                    name: `${cls.name}.${method.name}`,
+                                    module: mod.name,
+                                    url: `${modUrl}#${methodId}`,
+                                    score: method.name.toLowerCase().includes(q) ? 6 : 1
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Check functions
+                mod.functions.forEach(func => {
+                    const funcId = `${modId}-${func.name}`;
+                    if (func.name.toLowerCase().includes(q) || (func.docstring && func.docstring.toLowerCase().includes(q))) {
+                        results.push({
+                            type: 'function',
+                            name: func.name,
+                            module: mod.name,
+                            url: `${modUrl}#${funcId}`,
+                            score: func.name.toLowerCase().includes(q) ? 7 : 1
+                        });
+                    }
+                });
+
+                // Check variables
+                mod.variables.forEach(var_ => {
+                    const varId = `${modId}-${var_.name}`;
+                    if (var_.name.toLowerCase().includes(q) || (var_.docstring && var_.docstring.toLowerCase().includes(q))) {
+                        results.push({
+                            type: 'variable',
+                            name: var_.name,
+                            module: mod.name,
+                            url: `${modUrl}#${varId}`,
+                            score: var_.name.toLowerCase().includes(q) ? 5 : 1
+                        });
+                    }
+                });
+            });
+
+            // Sort by score
+            results.sort((a, b) => b.score - a.score);
+            renderResults(results.slice(0, 15), query);
+        }
+
+        function renderResults(results, query) {
+            if (results.length === 0) {
+                resultsDropdown.innerHTML = '<div style="padding: 1rem; color: var(--text-muted); text-align: center;">No global matches found</div>';
+                resultsDropdown.style.display = 'block';
+                return;
+            }
+
+            resultsDropdown.innerHTML = '';
+            results.forEach(res => {
+                const div = document.createElement('a');
+                div.className = 'search-result-item';
+                div.href = res.url;
+                div.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                        <span class="search-result-type">${res.type}</span>
+                        <span class="search-result-module" style="margin-bottom: 0;">${res.module}</span>
+                    </div>
+                    <span class="search-result-name">${highlightMatch(res.name, query)}</span>
+                `;
+                div.onclick = () => {
+                    resultsDropdown.style.display = 'none';
+                    searchInput.value = '';
+                };
+                resultsDropdown.appendChild(div);
+            });
+            resultsDropdown.style.display = 'block';
+        }
+
+        searchInput.addEventListener('focus', () => {
+            loadAllModules();
+        });
+
         searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const query = e.target.value.toLowerCase().trim();
-                let hasGlobalMatch = false;
+            const query = e.target.value.toLowerCase().trim();
+            if (query.length < 2) {
+                resultsDropdown.style.display = 'none';
+                return;
+            }
+            performGlobalSearch(query);
+        });
 
-                // Reset all highlighting first
-                searchables.forEach(el => {
-                    if (originalContent.has(el)) {
-                        el.innerHTML = originalContent.get(el);
-                    }
-                });
-
-                sections.forEach((section, idx) => {
-                    const moduleName = section.getAttribute('data-name').toLowerCase();
-                    const items = section.querySelectorAll('.item');
-                    
-                    let sectionMatch = moduleName.includes(query);
-                    if (query) {
-                        // Check module-level docstrings
-                        section.querySelectorAll('.module-doc.searchable').forEach(el => {
-                            if (highlight(el, query)) sectionMatch = true;
-                        });
-                    }
-
-                    let anyItemMatch = false;
-
-                    items.forEach(item => {
-                        const itemName = item.getAttribute('data-name').toLowerCase();
-                        let itemMatch = itemName.includes(query);
-                        
-                        // Highlight and check item-level names and docs
-                        item.querySelectorAll(':scope > .item-header .searchable, :scope > .item-doc.searchable, :scope > .signature.searchable').forEach(el => {
-                            if (highlight(el, query)) itemMatch = true;
-                        });
-
-                        const subItems = item.querySelectorAll('.sub-item');
-                        let anySubMatch = false;
-
-                        subItems.forEach(sub => {
-                            let subMatch = sub.getAttribute('data-name').toLowerCase().includes(query);
-                            sub.querySelectorAll('.searchable').forEach(el => {
-                                if (highlight(el, query)) subMatch = true;
-                            });
-
-                            if (subMatch) {
-                                sub.style.display = 'block';
-                                anySubMatch = true;
-                                itemMatch = true; // If a sub-item matches, its parent item should also be visible
-                            } else {
-                                // If query is active and no match in sub-item, hide it.
-                                // Otherwise, show it (when query is empty or parent matches).
-                                sub.style.display = (query && !itemMatch && !sectionMatch) ? 'none' : 'block';
-                            }
-                        });
-
-                        if (itemMatch || anySubMatch || sectionMatch) { // Item is visible if it matches, or any of its sub-items match, or its parent section matches
-                            item.style.display = 'block';
-                            anyItemMatch = true;
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-
-                    // Update category headers visibility
-                    section.querySelectorAll('.category-header').forEach(h => {
-                        let sibling = h.nextElementSibling;
-                        let visible = false;
-                        while (sibling && sibling.classList.contains('item')) {
-                            if (sibling.style.display !== 'none') {
-                                visible = true;
-                                break;
-                            }
-                            sibling = sibling.nextElementSibling;
-                        }
-                        h.style.display = visible || sectionMatch ? 'block' : 'none';
-                    });
-
-                    if (sectionMatch || anyItemMatch) {
-                        section.style.display = 'block';
-                        sidebarItems[idx].style.display = 'block';
-                        hasGlobalMatch = true;
-                    } else {
-                        section.style.display = 'none';
-                        sidebarItems[idx].style.display = 'none';
-                    }
-                });
-
-                noResults.style.display = hasGlobalMatch ? 'none' : 'block';
-            }, 100);
+        // Hide results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !resultsDropdown.contains(e.target)) {
+                resultsDropdown.style.display = 'none';
+            }
         });
     </script>
 </body>

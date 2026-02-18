@@ -38,13 +38,72 @@ def main():
     print(f"Found {len(modules)} documented modules.")
     
     generator = WikinGenerator(project_name, version)
-    html = generator.generate(modules)
     
-    output_path = os.path.join(os.getcwd(), "docs", "index.html")
-    generator.save(html, output_path)
+    docs_dir = os.path.join(os.getcwd(), "docs")
+    os.makedirs(docs_dir, exist_ok=True)
+
+    if generator.multipage:
+        print("Multipage mode enabled. Generating separate pages for each module...")
+        modules_dir = os.path.join(docs_dir, "modules")
+        os.makedirs(modules_dir, exist_ok=True)
+        
+        # Generate module pages
+        for mod in modules:
+            html = generator.generate(modules, current_module=mod)
+            output_path = os.path.join(modules_dir, f"{mod.original_name}.html")
+            generator.save(html, output_path)
+        
+        # Generate index.html (landing page)
+        index_html = generator.generate(modules, current_module=None)
+        output_path = os.path.join(docs_dir, "index.html")
+        generator.save(index_html, output_path)
+    else:
+        html = generator.generate(modules)
+        output_path = os.path.join(docs_dir, "index.html")
+        generator.save(html, output_path)
     
+    import json
+    import dataclasses
+    
+    # Create search manifest (names and links)
+    manifest = {
+        "project_name": generator.project_name,
+        "version": generator.version,
+        "multipage": generator.multipage,
+        "modules": []
+    }
+    
+    for mod in modules:
+        manifest["modules"].append({
+            "name": mod.name,
+            "original_name": mod.original_name,
+            "url": f"modules/{mod.original_name}.html" if generator.multipage else f"#{mod.original_name.replace('.', '-')}"
+        })
+        
+        # In multipage mode, save individual module DATA in .js files for dynamic loading
+        if generator.multipage:
+            mod_data = dataclasses.asdict(mod)
+            # JS-wrapper for local loading
+            js_data_path = os.path.join(docs_dir, "modules", f"{mod.original_name}.data.js")
+            with open(js_data_path, "w", encoding="utf-8") as f:
+                f.write(f"window.WIKIN_MODULE_{mod.original_name.replace('.', '_')} = {json.dumps(mod_data, ensure_ascii=False)};")
+
+    # Save manifest
+    search_index_path = os.path.join(docs_dir, "search_index.js")
+    with open(search_index_path, "w", encoding="utf-8") as f:
+        f.write(f"window.WIKIN_MANIFEST = {json.dumps(manifest, ensure_ascii=False)};")
+    
+    # If single page, also provide the full index for backward compatibility/simplicity
+    if not generator.multipage:
+        search_data = generator.get_search_data(modules)
+        with open(search_index_path, "w", encoding="utf-8") as f:
+            f.write(f"window.WIKIN_MANIFEST = {json.dumps(manifest, ensure_ascii=False)};\n")
+            f.write(f"window.WIKIN_SEARCH_INDEX = {json.dumps(search_data, ensure_ascii=False)};")
+    
+    print(f"Global search manifest saved to {search_index_path}")
+
     print("\nDocumentation generation complete!")
-    print(f"Open {output_path} in your browser to view.")
+    print(f"Open {os.path.join(docs_dir, 'index.html')} in your browser to view.")
 
 if __name__ == "__main__":
     main()

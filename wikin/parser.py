@@ -38,6 +38,7 @@ class ModuleDoc:
     Holds documentation data for a single Python module.
     """
     name: str
+    original_name: str
     path: str
     docstring: Optional[str] = None
     functions: List[FunctionDoc] = field(default_factory=list)
@@ -147,13 +148,14 @@ class WikinParser:
         try:
             tree = ast.parse(source)
         except SyntaxError:
-            return ModuleDoc(name=module_name, path=file_path)
+            return ModuleDoc(name=module_name, original_name=module_name, path=file_path)
 
         raw_docstring = ast.get_docstring(tree)
         display_name, cleaned_docstring = self._extract_metadata(raw_docstring, module_name)
 
         module_doc = ModuleDoc(
             name=display_name,
+            original_name=module_name,
             path=file_path,
             docstring=cleaned_docstring
         )

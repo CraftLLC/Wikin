@@ -8,7 +8,9 @@ A simple, beautiful documentation generator for Python. It extracts docstrings f
 - **Variable Documentation**: 
   - `#: comment before variable`
   - `variable = value #: comment after variable`
-- **Modern UI**: Clean, responsive HTML output with a premium look.
+- **Global Search**: Instantly find functions, classes, and variables across all modules.
+- **Multipage Mode**: Generate a clean landing page and separate files for each module.
+- **Modern UI**: Clean, responsive HTML output with a premium glassmorphic look.
 - **Markdown Support**: Use Markdown in your docstrings and comments.
 - **Module Metadata**: Customize how modules appear in the documentation using a `Wikin:` block.
 
@@ -63,6 +65,15 @@ internal_tools/
 ## Configuration
 
 You can customize your documentation by creating a `docs/.wikinconfig` file (TOML format) in your documentation directory.
+
+### Multipage Mode
+
+By default, Wikin generates a single large HTML file. For larger projects, you can enable multipage mode to generate a landing page and separate files for each module:
+
+```toml
+[main]
+multipage = true
+```
 
 ### Adding Project Links
 
