@@ -60,6 +60,22 @@ internal_tools/
 *.deprecated.py
 ```
 
+## Configuration
+
+You can customize your documentation by creating a `docs/.wikinconfig` file (TOML format) in your documentation directory.
+
+### Adding Project Links
+
+To add helpful links (like GitHub, PyPI, or your website) to the sidebar, use the `[links]` section:
+
+```toml
+[links]
+PyPI = "https://pypi.org/project/craftllc-wikin"
+GitHub = "https://github.com/CraftLLC/Wikin"
+```
+
+These links will appear as stylish buttons in the sidebar for quick access.
+
 ## Module Metadata Example
 
 You can set a custom display name for your modules by adding a `Wikin:` block at the top of your module's docstring:

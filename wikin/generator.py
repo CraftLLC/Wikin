@@ -8,6 +8,14 @@ Generates HTML documentation from parsed module data.
 import os
 import markdown
 import jinja2
+try:
+    import tomllib
+except ImportError:
+    # Fallback for Python < 3.11 if tomli is installed
+    try:
+        import tomli as tomllib
+    except ImportError:
+        tomllib = None
 from typing import List
 from .parser import ModuleDoc
 
@@ -231,7 +239,7 @@ HTML_TEMPLATE = """
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
             color: var(--text);
             font-family: inherit;
             font-size: 0.9rem;
@@ -258,6 +266,38 @@ HTML_TEMPLATE = """
             aside { width: 100%; height: auto; position: static; }
             main { padding: 2rem; }
         }
+
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-link {
+            flex: 1;
+            min-width: fit-content;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+            line-height: normal;
+        }
+
+        .project-link:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -265,6 +305,16 @@ HTML_TEMPLATE = """
         <div class="brand">
             {{ project_name }} <span class="version">v{{ version }}</span>
         </div>
+        
+        {% if links %}
+        <div class="project-links">
+            {% for name, url in links.items() %}
+            <a href="{{ url }}" target="_blank" class="project-link">
+                {{ name }}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
         
         <div class="search-container">
             <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -529,6 +579,18 @@ class WikinGenerator:
         self.project_name = project_name
         self.version = version
         
+        # Load config if exists
+        self.links = {}
+        if tomllib:
+            config_path = os.path.join(os.getcwd(), "docs", ".wikinconfig")
+            if os.path.exists(config_path):
+                try:
+                    with open(config_path, "rb") as f:
+                        config = tomllib.load(f)
+                        self.links = config.get("links", {})
+                except Exception as e:
+                    print(f"Warning: Failed to load .wikinconfig: {e}")
+        
         # Setup Jinja2 environment
         self.env = jinja2.Environment(
             loader=jinja2.BaseLoader(),
@@ -544,7 +606,8 @@ class WikinGenerator:
         return self.template.render(
             project_name=self.project_name,
             version=self.version,
-            modules=modules
+            modules=modules,
+            links=self.links
         )
 
     def save(self, html: str, output_path: str):
