@@ -1,4 +1,8 @@
+from importlib.metadata import version, PackageNotFoundError
 from .parser import WikinParser, ModuleDoc, FunctionDoc, VariableDoc
 from .generator import WikinGenerator
 
-__version__ = "1.2.2"
+try:
+    __version__ = version("craftllc-wikin")
+except PackageNotFoundError:
+    __version__ = "1.1.99"
