@@ -12,6 +12,9 @@ A simple, beautiful documentation generator for Python. It extracts docstrings f
 - **Multipage Mode**: Generate a clean landing page and separate files for each module.
 - **Modern UI**: Clean, responsive HTML output with a premium glassmorphic look.
 - **Markdown Support**: Use Markdown in your docstrings and comments.
+- **Docstring Tables**: Automatically formats Google-style and NumPy-style parameters, attributes, and returns into elegant Markdown tables.
+- **Addons (Themes & Plugins)**: Customize the look and feel with `.wikin` packaged CSS themes and JS plugins!
+- **Custom Pages**: Easily inject `README` or dynamically parsed `LICENSE` files right into the sidebar.
 - **Module Metadata**: Customize how modules appear in the documentation using a `Wikin:` block.
 
 ## Installation
@@ -23,16 +26,21 @@ pip install craftllc-wikin
 ## Usage
 
 ```bash
-wikin <path_to_code> <project_name> <version>
+python -m wikin gen <path_to_code> <project_name> <version> [docs_folder]
 ```
 
 Example:
 
 ```bash
-wikin ./ "My Project" 1.0.0
+python -m wikin gen ./ "My Project" 1.0.0
 ```
 
-This will generate documentation in the `docs/index.html` file.
+This will automatically parse the working directory and output standard HTML files to the customized `docs/` folder.
+
+If you have `argcomplete` installed, Wikin offers full Tab autocomplete for CLI options! Need help? Just run:
+```bash
+python -m wikin help
+```
 
 ## Variable Documentation Example
 
@@ -64,15 +72,16 @@ internal_tools/
 
 ## Configuration
 
-You can customize your documentation by creating a `docs/.wikinconfig` file (TOML format) in your documentation directory.
+You can fully orchestrate your generated suite by placing a `docs/.wikinconfig` (TOML format) directly inside your docs directory.
 
-### Multipage Mode
+### Multipage & Custom Branding
 
-By default, Wikin generates a single large HTML file. For larger projects, you can enable multipage mode to generate a landing page and separate files for each module:
+For larger projects, switch into multipage mode to split generated pages. You can also hide the Wikin branded watermark!
 
 ```toml
 [main]
 multipage = true
+show_generated_by = false
 ```
 
 ### Adding Project Links
@@ -85,7 +94,32 @@ PyPI = "https://pypi.org/project/craftllc-wikin"
 GitHub = "https://github.com/CraftLLC/Wikin"
 ```
 
-These links will appear as stylish buttons in the sidebar for quick access.
+### Custom Markdown Pages & Intelligent Licensing
+
+Wikin allows you to seamlessly inject generic Markdown files right into your sidebar! 
+
+```toml
+[pages]
+readme = "README.md"
+license = "LICENSE"
+license-parse = true
+```
+
+If `license-parse = true` is enabled, Wikin employs a versatile Regex parsing backend capable of correctly detecting **MIT, Apache 2.0, GNU GPL (v2/v3), BSD (2/3-Clause), MPL 2.0, WTFPL**, and more! It dynamically structures the Year, Type, and Author neatly above your license file.
+
+### Themes & Plugins (Addons API)
+
+Wikin supports community-provided ZIP addons formatted with `.wikin` extensions! Place these archives into `docs/addons/`. 
+
+```toml
+[addons]
+themes = ["OLED"]
+plugins = ["search_optimizer"]
+```
+
+These archives must contain a standard `manifest.json` mapped to their core `main_css` or `main_js` files. 
+
+*Try our included `OLED.wikin` theme to transform the standard glassmorphic array into a completely flat, pure-black experience designed exclusively for organic LED developers.*
 
 ## Module Metadata Example
 
@@ -100,4 +134,4 @@ This module handles all the parsing logic for Wikin.
 """
 ```
 
-In the documentation, this module will be titled as **Core Parser (your_package.parser)**. The metadata block itself will be hidden from the module's description.
+In the documentation, this module will be titled as **Core Parser (your_package.parser)**. The metadata block itself will be dynamically filtered from the description rendering.

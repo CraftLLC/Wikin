@@ -48,10 +48,21 @@ class ModuleDoc:
 class WikinParser:
     """
     A parser that scans Python files for docstrings and specially formatted variable comments.
+    
+    This parser utilizes the built-in `ast` module to traverse Python files and extract classes,
+    functions, methods, along with their docstrings and signatures.
+    
+    Attributes:
+        root_dir (str): The root directory to scan for Python files.
+        modules (list): A list of parsed module documentation objects.
+        ignore_spec (PathSpec): A PathSpec object used to filter out ignored files based on `.wikinignore`.
     """
     def __init__(self, root_dir: str):
         """
         Initialize the parser with a root directory or a single file path.
+        
+        Args:
+            root_dir (str): The target root directory path or file path from which to extract docs.
         """
         self.root_dir = os.path.abspath(root_dir)
         self.modules: List[ModuleDoc] = []
@@ -60,6 +71,9 @@ class WikinParser:
     def _load_ignore_spec(self) -> Optional[pathspec.PathSpec]:
         """
         Loads ignore patterns from docs/.wikinignore if it exists.
+        
+        Returns:
+            Optional[pathspec.PathSpec]: A configured PathSpec if the ignore file is found, otherwise None.
         """
         ignore_file = Path(os.getcwd()) / "docs" / ".wikinignore"
         if ignore_file.exists():
@@ -74,8 +88,12 @@ class WikinParser:
         """
         Perform a recursive search for Python files and extract documentation from them.
         
+        This method walks through the root directory, identifies all valid Python files 
+        (excluding those in junk directories or matched by the ignore spec), and parses 
+        them to populate the internal modules list.
+        
         Returns:
-            List[ModuleDoc]: A list of documented modules found.
+            List[ModuleDoc]: A list containing all uniquely documented modules found.
         """
         root_path = Path(self.root_dir)
         py_files = []
@@ -91,7 +109,7 @@ class WikinParser:
             for path in root_path.rglob("*.py"):
                 # Skip junk directories
                 if any(part.startswith('.') for part in path.parts) or \
-                   any(part in ('__pycache__', 'venv', 'env', 'dist', 'build') for part in path.parts):
+                   any(part in ('__pycache__', 'venv', 'env', 'dist', 'build', 'node_modules', 'site-packages', '.tox') for part in path.parts):
                     continue
                 
                 # Skip files matched by .wikinignore
@@ -135,12 +153,15 @@ class WikinParser:
         """
         Parses a single Python file using the ast module.
         
+        Extracts the module-level docstring, classes, functions, and specially annotated variables,
+        formatting them with properties and typing information.
+        
         Args:
-            file_path: Path to the .py file.
-            module_name: Dot-separated module name.
+            file_path (str): Path to the .py file.
+            module_name (str): Dot-separated module name used for the documentation title.
             
         Returns:
-            ModuleDoc containing extracted documentation.
+            ModuleDoc: Module object containing extracted and grouped documentation structures.
         """
         with open(file_path, "r", encoding="utf-8") as f:
             source = f.read()
@@ -157,26 +178,33 @@ class WikinParser:
             name=display_name,
             original_name=module_name,
             path=file_path,
-            docstring=cleaned_docstring
+            docstring=self._process_docstring(cleaned_docstring)
         )
 
         # Extract classes and functions
         for node in tree.body:
-            if isinstance(node, ast.FunctionDef):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 docstring = ast.get_docstring(node)
                 if docstring:
-                    module_doc.functions.append(self._parse_function(node))
+                    module_doc.functions.append(self._parse_function(node, source))
             
             elif isinstance(node, ast.ClassDef):
                 class_docstring = ast.get_docstring(node)
-                class_info = ClassDoc(name=node.name, docstring=class_docstring or "")
+                class_info = ClassDoc(name=node.name, docstring=self._process_docstring(class_docstring))
                 
                 # Extract methods from class
                 for subnode in node.body:
-                    if isinstance(subnode, ast.FunctionDef):
+                    if isinstance(subnode, (ast.FunctionDef, ast.AsyncFunctionDef)):
                         method_docstring = ast.get_docstring(subnode)
-                        if method_docstring:
-                            class_info.methods.append(self._parse_function(subnode))
+                        is_prop = False
+                        for d in getattr(subnode, 'decorator_list', []):
+                            if isinstance(d, ast.Name) and d.id == 'property':
+                                is_prop = True
+                            elif isinstance(d, ast.Attribute) and d.attr in ('setter', 'deleter'):
+                                is_prop = True
+                        
+                        if method_docstring or is_prop:
+                            class_info.methods.append(self._parse_function(subnode, source))
                 
                 if class_info.docstring or class_info.methods:
                     module_doc.classes.append(class_info)
@@ -215,7 +243,7 @@ class WikinParser:
                         module_doc.variables.append(VariableDoc(
                             name=var_name,
                             value=val_str,
-                            docstring=comment_text
+                            docstring=self._process_docstring(comment_text)
                         ))
                         continue
 
@@ -253,7 +281,7 @@ class WikinParser:
                                 module_doc.variables.append(VariableDoc(
                                     name=var_name,
                                     value="".join(val_tokens).strip(),
-                                    docstring=comment_text
+                                    docstring=self._process_docstring(comment_text)
                                 ))
                                 found_var = True
                                 break
@@ -269,12 +297,15 @@ class WikinParser:
         """
         Extracts Wikin-specific metadata from the module docstring.
         
+        Allows modules to formally override their display name by including a special 
+        YAML-like snippet in their root docstring block.
+        
         Args:
-            docstring: The raw module docstring.
-            original_name: The default dot-separated module name.
+            docstring (str): The raw module docstring block.
+            original_name (str): The default dot-separated underlying module name.
             
         Returns:
-            tuple: (display_name, cleaned_docstring)
+            tuple: A tuple mapping `(display_name, cleaned_docstring)`.
         """
         if not docstring:
             return original_name, docstring
@@ -302,16 +333,198 @@ class WikinParser:
             
         return display_name, new_docstring
 
-    def _parse_function(self, node: ast.FunctionDef) -> FunctionDoc:
+    def _process_docstring(self, text: Optional[str]) -> str:
+        """
+        Parses Google and Numpy style docstrings and converts their sections into Markdown tables.
+        
+        This function sequentially detects specific section headers such as `Args:`, `Returns:`, and `Raises:` 
+        to dynamically generate strict markdown tables inside the description string.
+        
+        Args:
+            text (Optional[str]): The original unformatted docstring representation.
+            
+        Returns:
+            str: Flow-processed docstring containing fully constructed Markdown table elements.
+        """
+        if not text:
+            return ""
+        
+        lines = text.split('\n')
+        out_lines = []
+        state = "normal"
+        table_lines = []
+        headers = []
+        
+        def flush_table():
+            if not table_lines: return []
+            
+            keep_cols = []
+            for i, h in enumerate(headers[1:]):
+                has_data = any(i < len(row) and str(row[i]).strip() for row in table_lines)
+                if has_data or h != "Type":
+                    keep_cols.append(i)
+                    
+            final_headers = [headers[i + 1] for i in keep_cols]
+            
+            res = [f"#### {headers[0]}", ""]
+            res.append("| " + " | ".join(final_headers) + " |")
+            res.append("|" + "|".join(["---"] * len(final_headers)) + "|")
+            for row in table_lines:
+                safe_row = [str(row[i]).replace('|', '\\|') if i < len(row) else "" for i in keep_cols]
+                res.append("| " + " | ".join(safe_row) + " |")
+            res.append("")
+            table_lines.clear()
+            headers.clear()
+            return res
+
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            stripped = line.strip()
+            
+            if state == "normal":
+                if stripped in ('Args:', 'Arguments:', 'Parameters:', 'Keyword Args:', 'Keyword Arguments:', 'Attributes:', 'Properties:'):
+                    out_lines.extend(flush_table())
+                    headers = [stripped[:-1], "Name", "Type", "Description"]
+                    state = "google_args"
+                elif stripped in ('Returns:', 'Yields:', 'Raises:'):
+                    out_lines.extend(flush_table())
+                    headers = [stripped[:-1], "Type", "Description"]
+                    state = "google_returns"
+                elif i + 1 < len(lines) and stripped in ('Parameters', 'Returns', 'Yields', 'Raises', 'Attributes', 'Properties') and lines[i+1].strip() == '-' * len(stripped):
+                    out_lines.extend(flush_table())
+                    if stripped in ('Parameters', 'Attributes', 'Properties'):
+                        headers = [stripped, "Name", "Type", "Description"]
+                        state = "numpy_args"
+                    else:
+                        headers = [stripped, "Type", "Description"]
+                        state = "numpy_returns"
+                    i += 1
+                else:
+                    out_lines.append(line)
+            
+            elif state == "google_args":
+                if not stripped:
+                    out_lines.extend(flush_table()); state = "normal"
+                elif line.startswith(' ') or line.startswith('\t'):
+                    m = re.match(r'^\s+(\*\*?\w+)\s*\((.*?)\):\s*(.*)', line)
+                    if not m: m = re.match(r'^\s+(\*\*?\w+):\s*(.*)', line)
+                    if not m: m = re.match(r'^\s+([\w\.]+)\s*\((.*?)\):\s*(.*)', line)
+                    if not m: m = re.match(r'^\s+([\w\.]+):\s*(.*)', line)
+                    
+                    if m:
+                        if len(m.groups()) == 3: table_lines.append([m.group(1), m.group(2), m.group(3)])
+                        else: table_lines.append([m.group(1), "", m.group(2)])
+                    else:
+                        if table_lines: table_lines[-1][-1] += " " + stripped
+                        else: out_lines.extend(flush_table()); state = "normal"; out_lines.append(line)
+                else:
+                    out_lines.extend(flush_table()); state = "normal"; i -= 1
+                    
+            elif state == "google_returns":
+                if not stripped:
+                    out_lines.extend(flush_table()); state = "normal"
+                elif line.startswith(' ') or line.startswith('\t'):
+                    m = re.match(r'^\s+([^:]+):\s*(.*)', line)
+                    if m: table_lines.append([m.group(1), m.group(2)])
+                    else:
+                        if table_lines: table_lines[-1][-1] += " " + stripped
+                        else: table_lines.append(["", stripped])
+                else:
+                    out_lines.extend(flush_table()); state = "normal"; i -= 1
+                    
+            elif state == "numpy_args":
+                if not stripped:
+                    out_lines.extend(flush_table()); state = "normal"
+                elif not (line.startswith(' ') or line.startswith('\t')):
+                    m = re.match(r'^([^:]+)\s*:\s*(.*)', line)
+                    if m: table_lines.append([m.group(1).strip(), m.group(2).strip(), ""])
+                    else: table_lines.append([stripped, "", ""])
+                else:
+                    if table_lines:
+                        if table_lines[-1][-1]: table_lines[-1][-1] += " " + stripped
+                        else: table_lines[-1][-1] = stripped
+                    else:
+                        out_lines.extend(flush_table()); state = "normal"; out_lines.append(line)
+                        
+            elif state == "numpy_returns":
+                if not stripped:
+                    out_lines.extend(flush_table()); state = "normal"
+                elif not (line.startswith(' ') or line.startswith('\t')):
+                    table_lines.append([stripped, ""])
+                else:
+                    if table_lines:
+                        if table_lines[-1][-1]: table_lines[-1][-1] += " " + stripped
+                        else: table_lines[-1][-1] = stripped
+                    else:
+                        out_lines.extend(flush_table()); state = "normal"; out_lines.append(line)
+            
+            i += 1
+            
+        out_lines.extend(flush_table())
+        return '\n'.join(out_lines).strip()
+
+    def _parse_function(self, node: ast.AST, source: str) -> FunctionDoc:
         """
         Internal helper to create a FunctionDoc from an AST node.
+        
+        Constructs the full function formatting structure, building definitions containing type hints, 
+        decorators (`@property`, `@classmethod`), async structures, and argument names.
+        
+        Args:
+            node (ast.AST): The AST representation block dictating the function or method footprint.
+            source (str): Processed full text representation of the file code, used specifically for matching exact inline python 3.8 constraints.
+            
+        Returns:
+            FunctionDoc: Documented container including function's name wrapper, generated signature path, and attached processed docstring block.
         """
-        args = []
-        for arg in node.args.args:
-            args.append(arg.arg)
-        signature = f"{node.name}({', '.join(args)})"
+        signature_args = ""
+        try:
+            if hasattr(ast, 'unparse'):
+                signature_args = ast.unparse(node.args)
+            elif hasattr(ast, 'get_source_segment'):
+                func_source = ast.get_source_segment(source, node)
+                if func_source:
+                    match = re.search(r'(?:async\s+)?def\s+[a-zA-Z0-9_]+\s*\((.*?)\)\s*(?:->.*?)?:', func_source, re.DOTALL)
+                    if match:
+                        signature_args = re.sub(r'\s+', ' ', match.group(1)).strip()
+        except Exception:
+            pass
+            
+        if not signature_args and hasattr(node, 'args') and hasattr(node.args, 'args'):
+            args = [getattr(arg, 'arg', '') for arg in node.args.args]
+            signature_args = ", ".join(args)
+
+        prefix = ""
+        is_prop = False
+        is_setter = False
+        is_deleter = False
+        
+        for d in getattr(node, 'decorator_list', []):
+            if isinstance(d, ast.Name):
+                if d.id == 'property':
+                    is_prop = True
+                elif d.id in ('classmethod', 'staticmethod'):
+                    prefix += f"@{d.id} "
+            elif isinstance(d, ast.Attribute):
+                if d.attr == 'setter':
+                    is_setter = True
+                elif d.attr == 'deleter':
+                    is_deleter = True
+
+        if is_prop:
+            prefix += "@property "
+        elif is_setter:
+            prefix += f"@{node.name}.setter "
+        elif is_deleter:
+            prefix += f"@{node.name}.deleter "
+
+        if isinstance(node, ast.AsyncFunctionDef):
+            prefix += "async "
+
+        signature = f"{prefix}{node.name}({signature_args})"
         return FunctionDoc(
             name=node.name,
-            signature=signature,
-            docstring=ast.get_docstring(node) or ""
+            signature=signature.strip(),
+            docstring=self._process_docstring(ast.get_docstring(node))
         )

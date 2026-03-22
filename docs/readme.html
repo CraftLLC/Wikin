@@ -484,7 +484,7 @@ table {
                 <li>
                     
                     <a href="./readme.html"
-                       class="">
+                       class="active">
                         Readme
                     </a>
                     
@@ -545,31 +545,102 @@ table {
         
         <div id="content-wrapper">
             
+            <section class="doc-section searchable">
+                
+                <h1>Wikin</h1>
+<p>A simple, beautiful documentation generator for Python. It extracts docstrings from functions and special comments from variables.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Function Docstrings</strong>: Standard Python triple-quoted docstrings.</li>
+<li><strong>Variable Documentation</strong>: </li>
+<li><code>#: comment before variable</code></li>
+<li><code>variable = value #: comment after variable</code></li>
+<li><strong>Global Search</strong>: Instantly find functions, classes, and variables across all modules.</li>
+<li><strong>Multipage Mode</strong>: Generate a clean landing page and separate files for each module.</li>
+<li><strong>Modern UI</strong>: Clean, responsive HTML output with a premium glassmorphic look.</li>
+<li><strong>Markdown Support</strong>: Use Markdown in your docstrings and comments.</li>
+<li><strong>Docstring Tables</strong>: Automatically formats Google-style and NumPy-style parameters, attributes, and returns into elegant Markdown tables.</li>
+<li><strong>Addons (Themes &amp; Plugins)</strong>: Customize the look and feel with <code>.wikin</code> packaged CSS themes and JS plugins!</li>
+<li><strong>Custom Pages</strong>: Easily inject <code>README</code> or dynamically parsed <code>LICENSE</code> files right into the sidebar.</li>
+<li><strong>Module Metadata</strong>: Customize how modules appear in the documentation using a <code>Wikin:</code> block.</li>
+</ul>
+<h2>Installation</h2>
+<pre><code class="language-bash">pip install craftllc-wikin
+</code></pre>
+<h2>Usage</h2>
+<pre><code class="language-bash">python -m wikin gen &lt;path_to_code&gt; &lt;project_name&gt; &lt;version&gt; [docs_folder]
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-bash">python -m wikin gen ./ &quot;My Project&quot; 1.0.0
+</code></pre>
+<p>This will automatically parse the working directory and output standard HTML files to the customized <code>docs/</code> folder.</p>
+<p>If you have <code>argcomplete</code> installed, Wikin offers full Tab autocomplete for CLI options! Need help? Just run:</p>
+<pre><code class="language-bash">python -m wikin help
+</code></pre>
+<h2>Variable Documentation Example</h2>
+<pre><code class="language-python">#: Number of requests per second
+rpm = 10
+
+timeout = 30 #: Connection timeout in seconds
+</code></pre>
+<p>Wikin will pick these up and include them in the generated documentation.</p>
+<h2>Ignoring Files</h2>
+<p>To exclude specific files or directories from being processed, create a <code>.wikinignore</code> file in your <code>docs/</code> folder. It supports standard <code>.gitignore</code> (gitwildmatch) patterns.</p>
+<p><strong>Example <code>docs/.wikinignore</code>:</strong></p>
+<pre><code class="language-text"># Ignore a specific file
+secret_module.py
+
+# Ignore an entire directory
+internal_tools/
+
+# Ignore all files with a certain extension
+*.deprecated.py
+</code></pre>
+<h2>Configuration</h2>
+<p>You can fully orchestrate your generated suite by placing a <code>docs/.wikinconfig</code> (TOML format) directly inside your docs directory.</p>
+<h3>Multipage &amp; Custom Branding</h3>
+<p>For larger projects, switch into multipage mode to split generated pages. You can also hide the Wikin branded watermark!</p>
+<pre><code class="language-toml">[main]
+multipage = true
+show_generated_by = false
+</code></pre>
+<h3>Adding Project Links</h3>
+<p>To add helpful links (like GitHub, PyPI, or your website) to the sidebar, use the <code>[links]</code> section:</p>
+<pre><code class="language-toml">[links]
+PyPI = &quot;https://pypi.org/project/craftllc-wikin&quot;
+GitHub = &quot;https://github.com/CraftLLC/Wikin&quot;
+</code></pre>
+<h3>Custom Markdown Pages &amp; Intelligent Licensing</h3>
+<p>Wikin allows you to seamlessly inject generic Markdown files right into your sidebar! </p>
+<pre><code class="language-toml">[pages]
+readme = &quot;README.md&quot;
+license = &quot;LICENSE&quot;
+license-parse = true
+</code></pre>
+<p>If <code>license-parse = true</code> is enabled, Wikin employs a versatile Regex parsing backend capable of correctly detecting <strong>MIT, Apache 2.0, GNU GPL (v2/v3), BSD (2/3-Clause), MPL 2.0, WTFPL</strong>, and more! It dynamically structures the Year, Type, and Author neatly above your license file.</p>
+<h3>Themes &amp; Plugins (Addons API)</h3>
+<p>Wikin supports community-provided ZIP addons formatted with <code>.wikin</code> extensions! Place these archives into <code>docs/addons/</code>. </p>
+<pre><code class="language-toml">[addons]
+themes = [&quot;OLED&quot;]
+plugins = [&quot;search_optimizer&quot;]
+</code></pre>
+<p>These archives must contain a standard <code>manifest.json</code> mapped to their core <code>main_css</code> or <code>main_js</code> files. </p>
+<p><em>Try our included <code>OLED.wikin</code> theme to transform the standard glassmorphic array into a completely flat, pure-black experience designed exclusively for organic LED developers.</em></p>
+<h2>Module Metadata Example</h2>
+<p>You can set a custom display name for your modules by adding a <code>Wikin:</code> block at the top of your module's docstring:</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+Wikin:
+    name: Core Parser
+
+This module handles all the parsing logic for Wikin.
+&quot;&quot;&quot;
+</code></pre>
+<p>In the documentation, this module will be titled as <strong>Core Parser (your_package.parser)</strong>. The metadata block itself will be dynamically filtered from the description rendering.</p>
+            </section>
             
             
             
             
-            <div class="welcome-section" style="text-align: center; padding: 4rem 0;">
-                <h2 style="border: none;">Welcome to Wikin Documentation</h2>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem;">
-                    Please select a module from the sidebar to view its detailed documentation.
-                </p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; text-align: left;">
-                    
-                    <a href="modules/wikin.__main__.html" class="item" style="text-decoration: none; color: inherit; display: block;">
-                        <span class="item-name">CLI Entry Point (wikin.__main__)</span>
-                    </a>
-                    
-                    <a href="modules/wikin.generator.html" class="item" style="text-decoration: none; color: inherit; display: block;">
-                        <span class="item-name">Generator (wikin.generator)</span>
-                    </a>
-                    
-                    <a href="modules/wikin.parser.html" class="item" style="text-decoration: none; color: inherit; display: block;">
-                        <span class="item-name">Parser (wikin.parser)</span>
-                    </a>
-                    
-                </div>
-            </div>
             
         </div>
     </main>

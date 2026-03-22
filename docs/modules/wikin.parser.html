@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.2.5 - Parser (wikin.parser) - Documentation</title>
+    <title>Wikin v1.3.0 - Parser (wikin.parser) - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -113,13 +113,14 @@
             margin: 0 auto;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4, h5, h6 {
             margin-bottom: 1.5rem;
             font-weight: 700;
+            color: var(--text);
         }
 
         h1 { font-size: 2.5rem; margin-top: 0; }
-        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; color: var(--primary); }
+        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         h3 { font-size: 1.3rem; margin-top: 2rem; }
 
         .doc-section {
@@ -190,6 +191,47 @@
         pre code {
             background: transparent;
             padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 2rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: table;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td:first-child {
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            color: var(--text);
         }
 
         .signature {
@@ -343,12 +385,62 @@
             border-color: var(--primary);
             transform: translateY(-1px);
         }
+        
     </style>
+    
+    
+    <style class="wikin-theme-style" data-theme-id="OLED" disabled>
+        :root {
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --bg: #000000;
+    --sidebar-bg: #000000;
+    --card-bg: #0a0a0a;
+    --text: #ffffff;
+    --text-muted: #a3a3a3;
+    --border: #262626;
+    --accent: #4ade80;
+}
+
+body {
+    background-color: var(--bg);
+}
+
+.item {
+    backdrop-filter: none;
+    background: #0a0a0a;
+    box-shadow: none;
+}
+
+aside {
+    border-right: 1px solid var(--border);
+    background: #000000;
+}
+
+table {
+    background: #000000;
+}
+    </style>
+    
+    
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
+            if (savedTheme !== 'default') {
+                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
+                if (style) {
+                    style.disabled = false;
+                }
+            }
+        })();
+    </script>
+    
 </head>
 <body>
     <aside>
         <div class="brand">
-            <a href="../index.html">Wikin <span class="version">v1.2.5</span></a>
+            <a href="../index.html">Wikin <span class="version">v1.3.0</span></a>
         </div>
         
         
@@ -371,7 +463,46 @@
             <div id="search-results" class="search-results"></div>
         </div>
 
+        
+        <div class="theme-switcher-container" style="margin-bottom: 2rem;">
+            <select id="theme-switcher" style="width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text); padding: 0.6rem; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; cursor: pointer;">
+                
+                <option value="default">Standard Theme</option>
+                
+                
+                <option value="OLED">OLED Theme</option>
+                
+            </select>
+        </div>
+        
+
         <nav>
+            
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Pages</div>
+            <ul id="sidebar-pages" style="margin-bottom: 2rem;">
+                
+                <li>
+                    
+                    <a href="../readme.html"
+                       class="">
+                        Readme
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="../license.html"
+                       class="">
+                        License
+                    </a>
+                    
+                </li>
+                
+            </ul>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Modules</div>
+            
+            
             <ul id="sidebar-list">
                 
                 <li data-name="CLI Entry Point (wikin.__main__)">
@@ -408,9 +539,13 @@
         </div>
 
         <h1>Wikin</h1>
+        
         <p style="color: var(--text-muted); margin-bottom: 3rem;">Documentation generated by Wikin.</p>
         
+        
         <div id="content-wrapper">
+            
+            
             
             <section id="wikin-parser" class="doc-section" data-name="Parser (wikin.parser)">
                 <h2>Module: Parser (wikin.parser)</h2>
@@ -442,7 +577,36 @@
                         </div>
                     </div>
                     
-                    <div class="item-doc searchable"><p>A parser that scans Python files for docstrings and specially formatted variable comments.</p></div>
+                    <div class="item-doc searchable"><p>A parser that scans Python files for docstrings and specially formatted variable comments.</p>
+<p>This parser utilizes the built-in <code>ast</code> module to traverse Python files and extract classes,
+functions, methods, along with their docstrings and signatures.</p>
+<h4>Attributes</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root_dir</td>
+<td>str</td>
+<td>The root directory to scan for Python files.</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>list</td>
+<td>A list of parsed module documentation objects.</td>
+</tr>
+<tr>
+<td>ignore_spec</td>
+<td>PathSpec</td>
+<td>A PathSpec object used to filter out ignored files based on <code>.wikinignore</code>.</td>
+</tr>
+</tbody>
+</table></div>
                     
                     
                     
@@ -451,9 +615,26 @@
                             <span class="item-name searchable" style="font-size: 0.9rem;">__init__</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, root_dir)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, root_dir: str)</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the parser with a root directory or a single file path.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the parser with a root directory or a single file path.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root_dir</td>
+<td>str</td>
+<td>The target root directory path or file path from which to extract docs.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -464,7 +645,22 @@
                         </div>
                         <code class="signature searchable" style="font-size: 0.8rem;">_load_ignore_spec(self)</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Loads ignore patterns from docs/.wikinignore if it exists.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Loads ignore patterns from docs/.wikinignore if it exists.</p>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Optional[pathspec.PathSpec]</td>
+<td>A configured PathSpec if the ignore file is found, otherwise None.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -476,8 +672,24 @@
                         <code class="signature searchable" style="font-size: 0.8rem;">parse(self)</code>
                         
                         <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Perform a recursive search for Python files and extract documentation from them.</p>
-<p>Returns:
-    List[ModuleDoc]: A list of documented modules found.</p></div>
+<p>This method walks through the root directory, identifies all valid Python files 
+(excluding those in junk directories or matched by the ignore spec), and parses 
+them to populate the internal modules list.</p>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>List[ModuleDoc]</td>
+<td>A list containing all uniquely documented modules found.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -486,14 +698,48 @@
                             <span class="item-name searchable" style="font-size: 0.9rem;">_parse_file</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_file(self, file_path, module_name)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_file(self, file_path: str, module_name: str)</code>
                         
                         <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Parses a single Python file using the ast module.</p>
-<p>Args:
-    file_path: Path to the .py file.
-    module_name: Dot-separated module name.</p>
-<p>Returns:
-    ModuleDoc containing extracted documentation.</p></div>
+<p>Extracts the module-level docstring, classes, functions, and specially annotated variables,
+formatting them with properties and typing information.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file_path</td>
+<td>str</td>
+<td>Path to the .py file.</td>
+</tr>
+<tr>
+<td>module_name</td>
+<td>str</td>
+<td>Dot-separated module name used for the documentation title.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ModuleDoc</td>
+<td>Module object containing extracted and grouped documentation structures.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -502,14 +748,93 @@
                             <span class="item-name searchable" style="font-size: 0.9rem;">_extract_metadata</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_extract_metadata(self, docstring, original_name)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_extract_metadata(self, docstring: str, original_name: str)</code>
                         
                         <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Extracts Wikin-specific metadata from the module docstring.</p>
-<p>Args:
-    docstring: The raw module docstring.
-    original_name: The default dot-separated module name.</p>
-<p>Returns:
-    tuple: (display_name, cleaned_docstring)</p></div>
+<p>Allows modules to formally override their display name by including a special 
+YAML-like snippet in their root docstring block.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docstring</td>
+<td>str</td>
+<td>The raw module docstring block.</td>
+</tr>
+<tr>
+<td>original_name</td>
+<td>str</td>
+<td>The default dot-separated underlying module name.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tuple</td>
+<td>A tuple mapping <code>(display_name, cleaned_docstring)</code>.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="wikin-parser-WikinParser-_process_docstring" class="sub-item" data-name="_process_docstring" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">_process_docstring</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_process_docstring(self, text: Optional[str])</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Parses Google and Numpy style docstrings and converts their sections into Markdown tables.</p>
+<p>This function sequentially detects specific section headers such as <code>Args:</code>, <code>Returns:</code>, and <code>Raises:</code> 
+to dynamically generate strict markdown tables inside the description string.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td>Optional[str]</td>
+<td>The original unformatted docstring representation.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>Flow-processed docstring containing fully constructed Markdown table elements.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -518,9 +843,48 @@
                             <span class="item-name searchable" style="font-size: 0.9rem;">_parse_function</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_function(self, node)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_function(self, node: ast.AST, source: str)</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Internal helper to create a FunctionDoc from an AST node.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Internal helper to create a FunctionDoc from an AST node.</p>
+<p>Constructs the full function formatting structure, building definitions containing type hints, 
+decorators (<code>@property</code>, <code>@classmethod</code>), async structures, and argument names.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node</td>
+<td>ast.AST</td>
+<td>The AST representation block dictating the function or method footprint.</td>
+</tr>
+<tr>
+<td>source</td>
+<td>str</td>
+<td>Processed full text representation of the file code, used specifically for matching exact inline python 3.8 constraints.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FunctionDoc</td>
+<td>Documented container including function's name wrapper, generated signature path, and attached processed docstring block.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -730,6 +1094,26 @@
                 resultsDropdown.style.display = 'none';
             }
         });
+        
+        
+        
+        (function() {
+            const select = document.getElementById('theme-switcher');
+            if (!select) return;
+            
+            const styles = document.querySelectorAll('.wikin-theme-style');
+            const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
+            select.value = savedTheme;
+            
+            select.addEventListener('change', (e) => {
+                const themeId = e.target.value;
+                styles.forEach(s => {
+                    s.disabled = (s.getAttribute('data-theme-id') !== themeId);
+                });
+                localStorage.setItem('wikin-theme', themeId);
+            });
+        })();
+        
     </script>
 </body>
 </html>

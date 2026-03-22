@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.2.5 - Generator (wikin.generator) - Documentation</title>
+    <title>Wikin v1.3.0 - Generator (wikin.generator) - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -113,13 +113,14 @@
             margin: 0 auto;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4, h5, h6 {
             margin-bottom: 1.5rem;
             font-weight: 700;
+            color: var(--text);
         }
 
         h1 { font-size: 2.5rem; margin-top: 0; }
-        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; color: var(--primary); }
+        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         h3 { font-size: 1.3rem; margin-top: 2rem; }
 
         .doc-section {
@@ -190,6 +191,47 @@
         pre code {
             background: transparent;
             padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 2rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: table;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td:first-child {
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            color: var(--text);
         }
 
         .signature {
@@ -343,12 +385,62 @@
             border-color: var(--primary);
             transform: translateY(-1px);
         }
+        
     </style>
+    
+    
+    <style class="wikin-theme-style" data-theme-id="OLED" disabled>
+        :root {
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --bg: #000000;
+    --sidebar-bg: #000000;
+    --card-bg: #0a0a0a;
+    --text: #ffffff;
+    --text-muted: #a3a3a3;
+    --border: #262626;
+    --accent: #4ade80;
+}
+
+body {
+    background-color: var(--bg);
+}
+
+.item {
+    backdrop-filter: none;
+    background: #0a0a0a;
+    box-shadow: none;
+}
+
+aside {
+    border-right: 1px solid var(--border);
+    background: #000000;
+}
+
+table {
+    background: #000000;
+}
+    </style>
+    
+    
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
+            if (savedTheme !== 'default') {
+                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
+                if (style) {
+                    style.disabled = false;
+                }
+            }
+        })();
+    </script>
+    
 </head>
 <body>
     <aside>
         <div class="brand">
-            <a href="../index.html">Wikin <span class="version">v1.2.5</span></a>
+            <a href="../index.html">Wikin <span class="version">v1.3.0</span></a>
         </div>
         
         
@@ -371,7 +463,46 @@
             <div id="search-results" class="search-results"></div>
         </div>
 
+        
+        <div class="theme-switcher-container" style="margin-bottom: 2rem;">
+            <select id="theme-switcher" style="width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text); padding: 0.6rem; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; cursor: pointer;">
+                
+                <option value="default">Standard Theme</option>
+                
+                
+                <option value="OLED">OLED Theme</option>
+                
+            </select>
+        </div>
+        
+
         <nav>
+            
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Pages</div>
+            <ul id="sidebar-pages" style="margin-bottom: 2rem;">
+                
+                <li>
+                    
+                    <a href="../readme.html"
+                       class="">
+                        Readme
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="../license.html"
+                       class="">
+                        License
+                    </a>
+                    
+                </li>
+                
+            </ul>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Modules</div>
+            
+            
             <ul id="sidebar-list">
                 
                 <li data-name="CLI Entry Point (wikin.__main__)">
@@ -408,9 +539,13 @@
         </div>
 
         <h1>Wikin</h1>
+        
         <p style="color: var(--text-muted); margin-bottom: 3rem;">Documentation generated by Wikin.</p>
         
+        
         <div id="content-wrapper">
+            
+            
             
             <section id="wikin-generator" class="doc-section" data-name="Generator (wikin.generator)">
                 <h2>Module: Generator (wikin.generator)</h2>
@@ -428,7 +563,57 @@
                         </div>
                     </div>
                     
-                    <div class="item-doc searchable"><p>Generates a premium-look HTML documentation from parsed module data.</p></div>
+                    <div class="item-doc searchable"><p>Generates a premium-look HTML documentation from parsed module data.</p>
+<p>This class handles rendering the parsed Abstract Syntax Tree representation of Python 
+functions and configurations into a Jinja2 template with modern CSS formatting and Javascript 
+indexing for global search support.</p>
+<h4>Attributes</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>project_name</td>
+<td>str</td>
+<td>The generic name of the documented project wrapper.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>str</td>
+<td>The overarching software version of the package.</td>
+</tr>
+<tr>
+<td>config</td>
+<td>dict</td>
+<td>Cached configuration dictionary dynamically loaded via <code>.wikinconfig</code>.</td>
+</tr>
+<tr>
+<td>links</td>
+<td>dict</td>
+<td>Accessible project repository and interface navigational links wrapper.</td>
+</tr>
+<tr>
+<td>multipage</td>
+<td>bool</td>
+<td>Instructs if internal outputs should parse identically out independently generated sub-pages.</td>
+</tr>
+<tr>
+<td>env</td>
+<td>jinja2.Environment</td>
+<td>Central template-loading structure context.</td>
+</tr>
+<tr>
+<td>template</td>
+<td>jinja2.Template</td>
+<td>Resolved loaded Jinja2 primary processing file HTML wrapper.</td>
+</tr>
+</tbody>
+</table></div>
                     
                     
                     
@@ -437,9 +622,38 @@
                             <span class="item-name searchable" style="font-size: 0.9rem;">__init__</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, project_name, version)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, project_name: str, version: str, docs_dir: str=&#39;docs&#39;)</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the generator with project metadata and configuration.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the generator with project metadata and configuration.</p>
+<p>This constructor initializes templating attributes, maps specific parsing mechanisms dynamically to Tomli structures, 
+and extracts custom routing commands externally parsed onto <code>.wikinconfig</code>. Contains logic to inject third-party '.wikin' plugin and theme ZIP archives.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>project_name</td>
+<td>str</td>
+<td>Textual explicit descriptor specifying overarching package build scope title.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>str</td>
+<td>The mapped tracking project versioning parameter sequence strings representation.</td>
+</tr>
+<tr>
+<td>docs_dir</td>
+<td>str</td>
+<td>Relative destination override target for generated documentation.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -448,10 +662,53 @@
                             <span class="item-name searchable" style="font-size: 0.9rem;">generate</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">generate(self, modules, current_module)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">generate(self, modules: List[ModuleDoc], current_module: ModuleDoc=None, current_page: dict=None)</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Transforms a list of ModuleDoc objects into an HTML string.
-In multipage mode, handles relative paths for modules and index.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Transforms a list of ModuleDoc objects into an HTML string.</p>
+<p>Generates functional page-spanning document variables alongside specific individual target structures. 
+In dynamically triggered multipage operations, parses independently linked cross-path module references dynamically.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>modules</td>
+<td>List[ModuleDoc]</td>
+<td>Parsed object structures retaining explicit hierarchical function-level context models.</td>
+</tr>
+<tr>
+<td>current_module</td>
+<td>ModuleDoc, optional</td>
+<td>If explicit single page operations are executing dynamically in multiprocessing tasks, denotes isolated file focus string wrappers. Defaults to None.</td>
+</tr>
+<tr>
+<td>current_page</td>
+<td>dict, optional</td>
+<td>Selected custom page output dynamically routing to template rendering engine.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>Substantially compiled raw output Jinja2 mapped HTML component configuration result sequence mapping wrapper.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -460,9 +717,42 @@ In multipage mode, handles relative paths for modules and index.</p></div>
                             <span class="item-name searchable" style="font-size: 0.9rem;">get_search_data</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">get_search_data(self, modules)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">get_search_data(self, modules: List[ModuleDoc])</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Serializes all module data into a dictionary for global search.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Serializes all module data into a dictionary for global search.</p>
+<p>Retained output is actively exposed within generated individual script templates supporting isolated index-focused contextual filtering logic mapping dependencies matching context instances.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>modules</td>
+<td>List[ModuleDoc]</td>
+<td>Internal configuration structures generated across core abstract parsing elements sequentially parsing module context items linearly stringing parsed entities context paths values dict wrapper targets components structure representations mapping instances lists mappings target instance path elements.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dict</td>
+<td>Dataclass-converted multi-level structural format mapped indexing dict target search mappings matching variables dict outputs sequence configurations.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -471,9 +761,32 @@ In multipage mode, handles relative paths for modules and index.</p></div>
                             <span class="item-name searchable" style="font-size: 0.9rem;">save</span>
                             <span class="item-type" style="font-size: 0.6rem;">method</span>
                         </div>
-                        <code class="signature searchable" style="font-size: 0.8rem;">save(self, html, output_path)</code>
+                        <code class="signature searchable" style="font-size: 0.8rem;">save(self, html: str, output_path: str)</code>
                         
-                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Saves the generated HTML to the specified file path.</p></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Saves the generated HTML to the specified file path.</p>
+<p>Instantiates any necessary sub-directories and commits rendered index outputs string elements files saving.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>html</td>
+<td>str</td>
+<td>Complete multi-line template output sequence mapping structure.</td>
+</tr>
+<tr>
+<td>output_path</td>
+<td>str</td>
+<td>Relative destination targeting document sequence paths elements file references targets configurations formatting mapped instances target instance mapping path parameter configuration mapping structures mapping strings variables sequence variables string strings properties structure outputs mapped instances output mapped values lists formatting wrappers configuration values structural outputs maps structures templates formatting values strings strings paths configurations contexts contexts values contexts representations context implementations dict references implementations structures context environments objects files representations dependencies components instance mapping targets instances dependencies instance contexts formatting instance templates representations structures implementations values environments targets environments maps context properties paths parameters outputs configurations maps strings structural instances references settings references instance variables targets paths dependencies dependencies wrappers elements targets files elements mappings environments templates variables lists parameters mapping instance formats components strings values strings properties parameters paths paths mapped formats components configurations strings outputs configurations lists strings strings lists dependencies implementations formatting contexts targets environments instances representations formats parameters scripts configurations instances mapped configurations components mapped configurations dict references objects strings environments string variables formatting environments dependencies.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
                     
@@ -683,6 +996,26 @@ In multipage mode, handles relative paths for modules and index.</p></div>
                 resultsDropdown.style.display = 'none';
             }
         });
+        
+        
+        
+        (function() {
+            const select = document.getElementById('theme-switcher');
+            if (!select) return;
+            
+            const styles = document.querySelectorAll('.wikin-theme-style');
+            const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
+            select.value = savedTheme;
+            
+            select.addEventListener('change', (e) => {
+                const themeId = e.target.value;
+                styles.forEach(s => {
+                    s.disabled = (s.getAttribute('data-theme-id') !== themeId);
+                });
+                localStorage.setItem('wikin-theme', themeId);
+            });
+        })();
+        
     </script>
 </body>
 </html>

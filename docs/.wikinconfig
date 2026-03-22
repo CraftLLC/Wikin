@@ -1,6 +1,16 @@
 [main]
-multipage=true
+multipage = true
 
 [links]
-PyPI="https://pypi.org/project/craftllc-wikin"
-GitHub="https://github.com/CraftLLC/Wikin"
+PyPI = "https://pypi.org/project/craftllc-wikin"
+GitHub = "https://github.com/CraftLLC/Wikin"
+
+[pages]
+readme = "README.md"
+license = "LICENSE"
+license-parse = true
+
+[addons]
+themes = ["OLED"]
+theme-switcher = true
+default-theme = "OLED"

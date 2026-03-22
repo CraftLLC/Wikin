@@ -134,13 +134,14 @@ HTML_TEMPLATE = r"""
             margin: 0 auto;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4, h5, h6 {
             margin-bottom: 1.5rem;
             font-weight: 700;
+            color: var(--text);
         }
 
         h1 { font-size: 2.5rem; margin-top: 0; }
-        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; color: var(--primary); }
+        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         h3 { font-size: 1.3rem; margin-top: 2rem; }
 
         .doc-section {
@@ -211,6 +212,47 @@ HTML_TEMPLATE = r"""
         pre code {
             background: transparent;
             padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 2rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: table;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td:first-child {
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            color: var(--text);
         }
 
         .signature {
@@ -364,7 +406,28 @@ HTML_TEMPLATE = r"""
             border-color: var(--primary);
             transform: translateY(-1px);
         }
+        {{ injected_css | safe }}
     </style>
+    
+    {% for t in themes_data %}
+    <style class="wikin-theme-style" data-theme-id="{{ t.id }}" {% if theme_switcher %}disabled{% endif %}>
+        {{ t.css | safe }}
+    </style>
+    {% endfor %}
+    
+    {% if theme_switcher %}
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('wikin-theme') || "{{ default_theme_id }}";
+            if (savedTheme !== 'default') {
+                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
+                if (style) {
+                    style.disabled = false;
+                }
+            }
+        })();
+    </script>
+    {% endif %}
 </head>
 <body>
     <aside>
@@ -388,7 +451,39 @@ HTML_TEMPLATE = r"""
             <div id="search-results" class="search-results"></div>
         </div>
 
+        {% if theme_switcher %}
+        <div class="theme-switcher-container" style="margin-bottom: 2rem;">
+            <select id="theme-switcher" style="width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text); padding: 0.6rem; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; cursor: pointer;">
+                {% if not exclude_default_theme %}
+                <option value="default">Standard Theme</option>
+                {% endif %}
+                {% for t in themes_data %}
+                <option value="{{ t.id }}">{{ t.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
         <nav>
+            {% if custom_pages %}
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Pages</div>
+            <ul id="sidebar-pages" style="margin-bottom: 2rem;">
+                {% for page in custom_pages %}
+                <li>
+                    {% if multipage %}
+                    <a href="{{ base_url }}{{ page.id }}.html"
+                       class="{% if current_page and current_page.id == page.id %}active{% endif %}">
+                        {{ page.title }}
+                    </a>
+                    {% else %}
+                    <a href="#{{ page.id }}">{{ page.title }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Modules</div>
+            {% endif %}
+            
             <ul id="sidebar-list">
                 {% for mod in modules | sort(attribute='name') %}
                 <li data-name="{{ mod.name }}">
@@ -411,9 +506,51 @@ HTML_TEMPLATE = r"""
         </div>
 
         <h1>{{ project_name }}</h1>
+        {% if show_generated_by %}
         <p style="color: var(--text-muted); margin-bottom: 3rem;">Documentation generated by Wikin.</p>
+        {% endif %}
         
         <div id="content-wrapper">
+            {% if current_page %}
+            <section class="doc-section searchable">
+                {% if current_page.get('license_info') %}
+                <div class="item" style="border-left: 4px solid var(--primary); margin-bottom: 2rem; background: rgba(99, 102, 241, 0.05);">
+                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 600;">Detected License Properties</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Type:</strong> <span class="highlight" style="padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600;">{{ current_page.license_info.type }}</span></div>
+                        {% if current_page.license_info.year != 'Unknown' %}
+                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Year:</strong> <code>{{ current_page.license_info.year }}</code></div>
+                        {% endif %}
+                        {% if current_page.license_info.author != 'Unknown' %}
+                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Author / Owner:</strong> <span style="color: var(--accent); font-weight: 500;">{{ current_page.license_info.author }}</span></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {{ current_page.content | markdown | safe }}
+            </section>
+            {% elif not current_module and not multipage and custom_pages %}
+                {% for page in custom_pages %}
+                <section id="{{ page.id }}" class="doc-section searchable" data-name="{{ page.title }}">
+                    {% if page.get('license_info') %}
+                    <div class="item" style="border-left: 4px solid var(--primary); margin-bottom: 2rem; background: rgba(99, 102, 241, 0.05);">
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 600;">Detected License Properties</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Type:</strong> <span class="highlight" style="padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600;">{{ page.license_info.type }}</span></div>
+                            {% if page.license_info.year != 'Unknown' %}
+                            <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Year:</strong> <code>{{ page.license_info.year }}</code></div>
+                            {% endif %}
+                            {% if page.license_info.author != 'Unknown' %}
+                            <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Author / Owner:</strong> <span style="color: var(--accent); font-weight: 500;">{{ page.license_info.author }}</span></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {{ page.content | markdown | safe }}
+                </section>
+                {% endfor %}
+            {% endif %}
+            
             {% for mod in content_modules | sort(attribute='name') %}
             <section id="{{ mod.original_name | replace('.', '-') }}" class="doc-section" data-name="{{ mod.name }}">
                 <h2>Module: {{ mod.name }}</h2>
@@ -491,7 +628,7 @@ HTML_TEMPLATE = r"""
             </section>
             {% endfor %}
             
-            {% if not current_module and multipage %}
+            {% if not current_module and not current_page and multipage %}
             <div class="welcome-section" style="text-align: center; padding: 4rem 0;">
                 <h2 style="border: none;">Welcome to {{ project_name }} Documentation</h2>
                 <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem;">
@@ -700,6 +837,26 @@ HTML_TEMPLATE = r"""
                 resultsDropdown.style.display = 'none';
             }
         });
+        {{ injected_js | safe }}
+        
+        {% if theme_switcher %}
+        (function() {
+            const select = document.getElementById('theme-switcher');
+            if (!select) return;
+            
+            const styles = document.querySelectorAll('.wikin-theme-style');
+            const savedTheme = localStorage.getItem('wikin-theme') || "{{ default_theme_id }}";
+            select.value = savedTheme;
+            
+            select.addEventListener('change', (e) => {
+                const themeId = e.target.value;
+                styles.forEach(s => {
+                    s.disabled = (s.getAttribute('data-theme-id') !== themeId);
+                });
+                localStorage.setItem('wikin-theme', themeId);
+            });
+        })();
+        {% endif %}
     </script>
 </body>
 </html>
@@ -708,51 +865,222 @@ HTML_TEMPLATE = r"""
 class WikinGenerator:
     """
     Generates a premium-look HTML documentation from parsed module data.
+    
+    This class handles rendering the parsed Abstract Syntax Tree representation of Python 
+    functions and configurations into a Jinja2 template with modern CSS formatting and Javascript 
+    indexing for global search support.
+    
+    Attributes:
+        project_name (str): The generic name of the documented project wrapper.
+        version (str): The overarching software version of the package.
+        config (dict): Cached configuration dictionary dynamically loaded via `.wikinconfig`.
+        links (dict): Accessible project repository and interface navigational links wrapper.
+        multipage (bool): Instructs if internal outputs should parse identically out independently generated sub-pages.
+        env (jinja2.Environment): Central template-loading structure context.
+        template (jinja2.Template): Resolved loaded Jinja2 primary processing file HTML wrapper.
     """
-    def __init__(self, project_name: str, version: str):
+    def __init__(self, project_name: str, version: str, docs_dir: str = "docs"):
         """
         Initialize the generator with project metadata and configuration.
+        
+        This constructor initializes templating attributes, maps specific parsing mechanisms dynamically to Tomli structures, 
+        and extracts custom routing commands externally parsed onto `.wikinconfig`. Contains logic to inject third-party '.wikin' plugin and theme ZIP archives.
+        
+        Args:
+            project_name (str): Textual explicit descriptor specifying overarching package build scope title.
+            version (str): The mapped tracking project versioning parameter sequence strings representation.
+            docs_dir (str): Relative destination override target for generated documentation.
         """
+        import zipfile
+        import json
         self.project_name = project_name
         self.version = version
+        self.docs_dir = docs_dir
         self.config = {}
         self.links = {}
         self.multipage = False
+        self.custom_pages = []
+        self.show_generated_by = True
+        self.injected_css = ""
+        self.injected_js = ""
+        self.themes_data = []
+        self.theme_switcher = False
+        self.exclude_default_theme = False
+        self.default_theme_id = "default"
         
+        config_path = os.path.join(os.getcwd(), self.docs_dir, ".wikinconfig")
         if tomllib:
-            config_path = os.path.join(os.getcwd(), "docs", ".wikinconfig")
             if os.path.exists(config_path):
                 try:
                     with open(config_path, "rb") as f:
                         self.config = tomllib.load(f)
                         self.links = self.config.get("links", {})
-                        self.multipage = self.config.get("main", {}).get("multipage", False)
+                        
+                        main_cfg = self.config.get("main", {})
+                        self.multipage = main_cfg.get("multipage", False)
+                        self.show_generated_by = main_cfg.get("show_generated_by", True)
+                        
+                        addons_cfg = self.config.get("addons", {})
+                        self.theme_switcher = addons_cfg.get("theme-switcher", False)
+                        self.exclude_default_theme = addons_cfg.get("exclude-default-theme", False)
+                        
+                        pages_dict = self.config.get("pages", {})
+                        license_parse = pages_dict.get("license-parse", False)
+                        
+                        for pid, path in pages_dict.items():
+                            if pid == "license-parse":
+                                continue
+                            full_path = os.path.join(os.getcwd(), str(path))
+                            if os.path.exists(full_path):
+                                try:
+                                    with open(full_path, "r", encoding="utf-8") as pf:
+                                        content = pf.read()
+                                        
+                                        page_data = {
+                                            "id": pid,
+                                            "title": pid.replace('_', ' ').capitalize(),
+                                            "content": content
+                                        }
+                                        
+                                        if license_parse and pid.lower() == "license":
+                                            import re
+                                            info = {"type": "Unknown", "year": "Unknown", "author": "Unknown"}
+                                            lower_content = content.lower()
+                                            
+                                            # Identify License Type
+                                            if "mit license" in lower_content or "permission is hereby granted, free of charge" in lower_content:
+                                                info["type"] = "MIT License"
+                                            elif "apache license" in lower_content and "version 2.0" in lower_content:
+                                                info["type"] = "Apache License 2.0"
+                                            elif "gnu general public license" in lower_content and "version 3" in lower_content:
+                                                info["type"] = "GNU GPL v3"
+                                            elif "gnu general public license" in lower_content and "version 2" in lower_content:
+                                                info["type"] = "GNU GPL v2"
+                                            elif "gnu lesser general public license" in lower_content:
+                                                info["type"] = "GNU LGPL"
+                                            elif "gnu affero general public license" in lower_content:
+                                                info["type"] = "GNU AGPL"
+                                            elif "mozilla public license" in lower_content and "version 2.0" in lower_content:
+                                                info["type"] = "MPL 2.0"
+                                            elif "the unlicense" in lower_content or ("public domain" in lower_content and "unencumbered" in lower_content):
+                                                info["type"] = "The Unlicense"
+                                            elif "do what the fuck you want to public license" in lower_content or "wtfpl" in lower_content:
+                                                info["type"] = "WTFPL"
+                                            elif "creative commons zero" in lower_content or "cc0" in lower_content:
+                                                info["type"] = "CC0 1.0 Universal"
+                                            elif "eclipse public license" in lower_content:
+                                                info["type"] = "Eclipse Public License"
+                                            elif "redistribution and use in source and binary forms" in lower_content:
+                                                info["type"] = "BSD 3-Clause License" if "neither the name" in lower_content else "BSD 2-Clause License"
+                                            
+                                            # Generically extract year and author across formats
+                                            m = re.search(r'copyright\s*(?:\([cC]\))?\s*(\d{4}(?:-\d{4})?)\s+([^\n\r]+)', content, re.IGNORECASE)
+                                            if m:
+                                                info["year"] = m.group(1).strip()
+                                                author_text = m.group(2).strip()
+                                                # Strip common trailing lines
+                                                author_text = re.sub(r'(\.|\,)?\s*(all rights reserved|licensed under|this program).*$', '', author_text, flags=re.IGNORECASE).strip()
+                                                if len(author_text) > 40:
+                                                    author_text = author_text[:40].strip() + "..."
+                                                info["author"] = author_text
+                                                
+                                            page_data["license_info"] = info
+
+                                        self.custom_pages.append(page_data)
+                                except Exception as e:
+                                    print(f"Warning: Could not read custom page {path}: {e}")
+                                    
+                        addons_cfg = self.config.get("addons", {})
+                        themes = addons_cfg.get("themes", [])
+                        plugins = addons_cfg.get("plugins", [])
+                        
+                        for addon_group, is_theme in [(themes, True), (plugins, False)]:
+                            for addon_name in addon_group:
+                                addon_path = os.path.join(os.getcwd(), self.docs_dir, "addons", f"{addon_name}.wikin")
+                                if os.path.exists(addon_path):
+                                    try:
+                                        with zipfile.ZipFile(addon_path, 'r') as z:
+                                            if "manifest.json" in z.namelist():
+                                                manifest = json.loads(z.read("manifest.json").decode("utf-8"))
+                                                css_file = manifest.get("main_css")
+                                                js_file = manifest.get("main_js")
+                                                
+                                                if css_file and css_file in z.namelist():
+                                                    content_css = z.read(css_file).decode("utf-8")
+                                                    if is_theme:
+                                                        self.themes_data.append({
+                                                            "id": addon_name, 
+                                                            "name": manifest.get("name", addon_name), 
+                                                            "css": content_css
+                                                        })
+                                                    else:
+                                                        self.injected_css += f"\n/* Addon [{addon_name}] */\n" + content_css
+                                                        
+                                                if js_file and js_file in z.namelist():
+                                                    self.injected_js += f"\n/* Addon [{addon_name}] */\n" + z.read(js_file).decode("utf-8")
+                                    except Exception as e:
+                                        print(f"Warning: Failed to load addon {addon_name}: {e}")
+                                else:
+                                    print(f"Warning: Addon {addon_name} not found at {addon_path}")
+                                    
+                        if self.theme_switcher:
+                            configured_default = addons_cfg.get("default-theme")
+                            total_themes_count = len(self.themes_data) if self.exclude_default_theme else len(self.themes_data) + 1
+                            
+                            if total_themes_count > 2 and not configured_default:
+                                print("Warning: 'default-theme' in [addons] is highly recommended (or mandatory) when providing multiple theme choices!")
+                            
+                            if configured_default:
+                                self.default_theme_id = configured_default
+                            elif self.exclude_default_theme and self.themes_data:
+                                self.default_theme_id = self.themes_data[0]["id"]
+                            else:
+                                self.default_theme_id = "default"
+                                    
                 except Exception as e:
                     print(f"Warning: Failed to load .wikinconfig: {e}")
+        else:
+            if os.path.exists(config_path):
+                print("Warning: .wikinconfig found, but 'tomli' is not installed. To parse config on Python < 3.11, run: pip install tomli")
         
         # Setup Jinja2 environment
         self.env = jinja2.Environment(
             loader=jinja2.BaseLoader(),
             autoescape=True
         )
-        self.env.filters['markdown'] = lambda x: markdown.markdown(x) if x else ""
+        self.env.filters['markdown'] = lambda x: markdown.markdown(x, extensions=['tables', 'fenced_code']) if x else ""
         self.template = self.env.from_string(HTML_TEMPLATE)
 
-    def generate(self, modules: List[ModuleDoc], current_module: ModuleDoc = None) -> str:
+    def generate(self, modules: List[ModuleDoc], current_module: ModuleDoc = None, current_page: dict = None) -> str:
         """
         Transforms a list of ModuleDoc objects into an HTML string.
-        In multipage mode, handles relative paths for modules and index.
+        
+        Generates functional page-spanning document variables alongside specific individual target structures. 
+        In dynamically triggered multipage operations, parses independently linked cross-path module references dynamically.
+        
+        Args:
+            modules (List[ModuleDoc]): Parsed object structures retaining explicit hierarchical function-level context models.
+            current_module (ModuleDoc, optional): If explicit single page operations are executing dynamically in multiprocessing tasks, denotes isolated file focus string wrappers. Defaults to None.
+            current_page (dict, optional): Selected custom page output dynamically routing to template rendering engine.
+            
+        Returns:
+            str: Substantially compiled raw output Jinja2 mapped HTML component configuration result sequence mapping wrapper.
         """
         content_modules = [current_module] if current_module else modules
-        if not current_module and self.multipage:
-            # Landing page (index.html)
-            content_modules = [] # Don't show modules directly on landing page if multipage
-            base_url = "./"
-            module_prefix = "modules/"
-        elif current_module and self.multipage:
+        if current_module and self.multipage:
             # Individual module page
             base_url = "../"
             module_prefix = "./"
+        elif current_page and self.multipage:
+            # Custom page
+            content_modules = []
+            base_url = "./"
+            module_prefix = "modules/"
+        elif not current_module and not current_page and self.multipage:
+            # Landing page (index.html)
+            content_modules = []
+            base_url = "./"
+            module_prefix = "modules/"
         else:
             # Single page mode
             base_url = "./"
@@ -765,15 +1093,32 @@ class WikinGenerator:
             modules=modules,
             content_modules=content_modules,
             links=self.links,
+            custom_pages=self.custom_pages,
             multipage=self.multipage,
             current_module=current_module,
+            current_page=current_page,
             base_url=base_url,
-            module_prefix=module_prefix
+            module_prefix=module_prefix,
+            injected_css=self.injected_css,
+            injected_js=self.injected_js,
+            show_generated_by=self.show_generated_by,
+            themes_data=self.themes_data,
+            theme_switcher=self.theme_switcher,
+            exclude_default_theme=self.exclude_default_theme,
+            default_theme_id=self.default_theme_id
         )
 
     def get_search_data(self, modules: List[ModuleDoc]) -> dict:
         """
         Serializes all module data into a dictionary for global search.
+        
+        Retained output is actively exposed within generated individual script templates supporting isolated index-focused contextual filtering logic mapping dependencies matching context instances.
+        
+        Args:
+            modules (List[ModuleDoc]): Internal configuration structures generated across core abstract parsing elements sequentially parsing module context items linearly stringing parsed entities context paths values dict wrapper targets components structure representations mapping instances lists mappings target instance path elements.
+            
+        Returns:
+            dict: Dataclass-converted multi-level structural format mapped indexing dict target search mappings matching variables dict outputs sequence configurations.
         """
         import dataclasses
         return {
@@ -785,6 +1130,12 @@ class WikinGenerator:
     def save(self, html: str, output_path: str):
         """
         Saves the generated HTML to the specified file path.
+        
+        Instantiates any necessary sub-directories and commits rendered index outputs string elements files saving.
+        
+        Args:
+            html (str): Complete multi-line template output sequence mapping structure.
+            output_path (str): Relative destination targeting document sequence paths elements file references targets configurations formatting mapped instances target instance mapping path parameter configuration mapping structures mapping strings variables sequence variables string strings properties structure outputs mapped instances output mapped values lists formatting wrappers configuration values structural outputs maps structures templates formatting values strings strings paths configurations contexts contexts values contexts representations context implementations dict references implementations structures context environments objects files representations dependencies components instance mapping targets instances dependencies instance contexts formatting instance templates representations structures implementations values environments targets environments maps context properties paths parameters outputs configurations maps strings structural instances references settings references instance variables targets paths dependencies dependencies wrappers elements targets files elements mappings environments templates variables lists parameters mapping instance formats components strings values strings properties parameters paths paths mapped formats components configurations strings outputs configurations lists strings strings lists dependencies implementations formatting contexts targets environments instances representations formats parameters scripts configurations instances mapped configurations components mapped configurations dict references objects strings environments string variables formatting environments dependencies.
         """
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
         with open(output_path, "w", encoding="utf-8") as f:

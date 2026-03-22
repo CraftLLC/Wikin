@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.2.5 - CLI Entry Point (wikin.__main__) - Documentation</title>
+    <title>Wikin v1.3.0 - CLI Entry Point (wikin.__main__) - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -113,13 +113,14 @@
             margin: 0 auto;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4, h5, h6 {
             margin-bottom: 1.5rem;
             font-weight: 700;
+            color: var(--text);
         }
 
         h1 { font-size: 2.5rem; margin-top: 0; }
-        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; color: var(--primary); }
+        h2 { font-size: 1.8rem; margin-top: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         h3 { font-size: 1.3rem; margin-top: 2rem; }
 
         .doc-section {
@@ -190,6 +191,47 @@
         pre code {
             background: transparent;
             padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 2rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: table;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td:first-child {
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            color: var(--text);
         }
 
         .signature {
@@ -343,12 +385,62 @@
             border-color: var(--primary);
             transform: translateY(-1px);
         }
+        
     </style>
+    
+    
+    <style class="wikin-theme-style" data-theme-id="OLED" disabled>
+        :root {
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --bg: #000000;
+    --sidebar-bg: #000000;
+    --card-bg: #0a0a0a;
+    --text: #ffffff;
+    --text-muted: #a3a3a3;
+    --border: #262626;
+    --accent: #4ade80;
+}
+
+body {
+    background-color: var(--bg);
+}
+
+.item {
+    backdrop-filter: none;
+    background: #0a0a0a;
+    box-shadow: none;
+}
+
+aside {
+    border-right: 1px solid var(--border);
+    background: #000000;
+}
+
+table {
+    background: #000000;
+}
+    </style>
+    
+    
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
+            if (savedTheme !== 'default') {
+                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
+                if (style) {
+                    style.disabled = false;
+                }
+            }
+        })();
+    </script>
+    
 </head>
 <body>
     <aside>
         <div class="brand">
-            <a href="../index.html">Wikin <span class="version">v1.2.5</span></a>
+            <a href="../index.html">Wikin <span class="version">v1.3.0</span></a>
         </div>
         
         
@@ -371,7 +463,46 @@
             <div id="search-results" class="search-results"></div>
         </div>
 
+        
+        <div class="theme-switcher-container" style="margin-bottom: 2rem;">
+            <select id="theme-switcher" style="width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text); padding: 0.6rem; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; cursor: pointer;">
+                
+                <option value="default">Standard Theme</option>
+                
+                
+                <option value="OLED">OLED Theme</option>
+                
+            </select>
+        </div>
+        
+
         <nav>
+            
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Pages</div>
+            <ul id="sidebar-pages" style="margin-bottom: 2rem;">
+                
+                <li>
+                    
+                    <a href="../readme.html"
+                       class="">
+                        Readme
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="../license.html"
+                       class="">
+                        License
+                    </a>
+                    
+                </li>
+                
+            </ul>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 0.5rem 0.5rem; letter-spacing: 0.05em; font-weight: 600;">Modules</div>
+            
+            
             <ul id="sidebar-list">
                 
                 <li data-name="CLI Entry Point (wikin.__main__)">
@@ -408,9 +539,13 @@
         </div>
 
         <h1>Wikin</h1>
+        
         <p style="color: var(--text-muted); margin-bottom: 3rem;">Documentation generated by Wikin.</p>
         
+        
         <div id="content-wrapper">
+            
+            
             
             <section id="wikin-__main__" class="doc-section" data-name="CLI Entry Point (wikin.__main__)">
                 <h2>Module: CLI Entry Point (wikin.__main__)</h2>
@@ -432,7 +567,7 @@
                     <code class="signature searchable">main()</code>
                     
                     <div class="item-doc searchable"><p>Main entry point for the Wikin CLI tool.
-Parses command line arguments and initiates documentation generation.</p></div>
+Parses command line arguments mapping outputs.</p></div>
                     
                 </div>
                 
@@ -638,6 +773,26 @@ Parses command line arguments and initiates documentation generation.</p></div>
                 resultsDropdown.style.display = 'none';
             }
         });
+        
+        
+        
+        (function() {
+            const select = document.getElementById('theme-switcher');
+            if (!select) return;
+            
+            const styles = document.querySelectorAll('.wikin-theme-style');
+            const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
+            select.value = savedTheme;
+            
+            select.addEventListener('change', (e) => {
+                const themeId = e.target.value;
+                styles.forEach(s => {
+                    s.disabled = (s.getAttribute('data-theme-id') !== themeId);
+                });
+                localStorage.setItem('wikin-theme', themeId);
+            });
+        })();
+        
     </script>
 </body>
 </html>
