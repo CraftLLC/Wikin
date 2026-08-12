@@ -1,0 +1,1 @@
+window.WIKIN_MODULE___main__ = {"name": "CLI Entry Point (__main__)", "original_name": "__main__", "path": "/media/dinya/WindowsData/Все/Wikin/wikin/__main__.py", "docstring": "", "functions": [{"name": "main", "signature": "main()", "docstring": "Main entry point for the Wikin CLI tool.\nParses command line arguments mapping outputs."}], "variables": [], "classes": []};

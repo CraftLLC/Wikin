@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.3.0 - CLI Entry Point (wikin.__main__) - Documentation</title>
+    <title>Wikin v1.3.1 - CLI Entry Point (wikin.__main__) - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -427,12 +427,9 @@ table {
     <script>
         (function() {
             const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
-            if (savedTheme !== 'default') {
-                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
-                if (style) {
-                    style.disabled = false;
-                }
-            }
+            document.querySelectorAll('.wikin-theme-style').forEach(s => {
+                s.disabled = (s.getAttribute('data-theme-id') !== savedTheme);
+            });
         })();
     </script>
     
@@ -440,7 +437,7 @@ table {
 <body>
     <aside>
         <div class="brand">
-            <a href="../index.html">Wikin <span class="version">v1.3.0</span></a>
+            <a href="../index.html">Wikin <span class="version">v1.3.1</span></a>
         </div>
         
         

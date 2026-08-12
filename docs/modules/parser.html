@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.3.1 - Documentation</title>
+    <title>Wikin v1.3.1 - Parser (parser) - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -437,7 +437,7 @@ table {
 <body>
     <aside>
         <div class="brand">
-            <a href="./index.html">Wikin <span class="version">v1.3.1</span></a>
+            <a href="../index.html">Wikin <span class="version">v1.3.1</span></a>
         </div>
         
         
@@ -480,7 +480,7 @@ table {
                 
                 <li>
                     
-                    <a href="./readme.html"
+                    <a href="../readme.html"
                        class="">
                         Readme
                     </a>
@@ -489,8 +489,8 @@ table {
                 
                 <li>
                     
-                    <a href="./license.html"
-                       class="active">
+                    <a href="../license.html"
+                       class="">
                         License
                     </a>
                     
@@ -503,22 +503,22 @@ table {
             <ul id="sidebar-list">
                 
                 <li data-name="CLI Entry Point (__main__)">
-                    <a href="modules/__main__.html" 
+                    <a href="./__main__.html" 
                        class="">
                         CLI Entry Point (__main__)
                     </a>
                 </li>
                 
                 <li data-name="Generator (generator)">
-                    <a href="modules/generator.html" 
+                    <a href="./generator.html" 
                        class="">
                         Generator (generator)
                     </a>
                 </li>
                 
                 <li data-name="Parser (parser)">
-                    <a href="modules/parser.html" 
-                       class="">
+                    <a href="./parser.html" 
+                       class="active">
                         Parser (parser)
                     </a>
                 </li>
@@ -542,54 +542,371 @@ table {
         
         <div id="content-wrapper">
             
-            <section class="doc-section searchable">
+            
+            
+            <section id="parser" class="doc-section" data-name="Parser (parser)">
+                <h2>Module: Parser (parser)</h2>
                 
-                <div class="item" style="border-left: 4px solid var(--primary); margin-bottom: 2rem; background: rgba(99, 102, 241, 0.05);">
-                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 600;">Detected License Properties</div>
-                    <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Type:</strong> <span class="highlight" style="padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600;">MIT License</span></div>
-                        
-                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Year:</strong> <code>2026</code></div>
-                        
-                        
-                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Author / Owner:</strong> <span style="color: var(--accent); font-weight: 500;">CraftLLC</span></div>
-                        
+                
+                
+                
+                <div class="category-header"><h3>Classes</h3></div>
+                
+                <div id="parser-ModuleDoc" class="item" data-name="ModuleDoc">
+                    <div class="item-header">
+                        <div>
+                            <span class="item-name searchable">ModuleDoc</span>
+                            <span class="item-type">class</span>
+                        </div>
                     </div>
+                    
+                    <div class="item-doc searchable"><p>Holds documentation data for a single Python module.</p></div>
+                    
+                    
+                    
                 </div>
                 
-                <p>MIT License</p>
-<p>Copyright (c) 2026 CraftLLC</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
+                <div id="parser-WikinParser" class="item" data-name="WikinParser">
+                    <div class="item-header">
+                        <div>
+                            <span class="item-name searchable">WikinParser</span>
+                            <span class="item-type">class</span>
+                        </div>
+                    </div>
+                    
+                    <div class="item-doc searchable"><p>A parser that scans Python files for docstrings and specially formatted variable comments.</p>
+<p>This parser utilizes the built-in <code>ast</code> module to traverse Python files and extract classes,
+functions, methods, along with their docstrings and signatures.</p>
+<h4>Attributes</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root_dir</td>
+<td>str</td>
+<td>The root directory to scan for Python files.</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>list</td>
+<td>A list of parsed module documentation objects.</td>
+</tr>
+<tr>
+<td>ignore_spec</td>
+<td>PathSpec</td>
+<td>A PathSpec object used to filter out ignored files based on <code>.wikinignore</code>.</td>
+</tr>
+</tbody>
+</table></div>
+                    
+                    
+                    
+                    <div id="parser-WikinParser-__init__" class="sub-item" data-name="__init__" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">__init__</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, root_dir: str)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the parser with a root directory or a single file path.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root_dir</td>
+<td>str</td>
+<td>The target root directory path or file path from which to extract docs.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="parser-WikinParser-_load_ignore_spec" class="sub-item" data-name="_load_ignore_spec" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">_load_ignore_spec</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_load_ignore_spec(self)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Loads ignore patterns from docs/.wikinignore if it exists.</p>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Optional[pathspec.PathSpec]</td>
+<td>A configured PathSpec if the ignore file is found, otherwise None.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="parser-WikinParser-parse" class="sub-item" data-name="parse" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">parse</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">parse(self)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Perform a recursive search for Python files and extract documentation from them.</p>
+<p>This method walks through the root directory, identifies all valid Python files 
+(excluding those in junk directories or matched by the ignore spec), and parses 
+them to populate the internal modules list.</p>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>List[ModuleDoc]</td>
+<td>A list containing all uniquely documented modules found.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="parser-WikinParser-_parse_file" class="sub-item" data-name="_parse_file" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">_parse_file</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_file(self, file_path: str, module_name: str)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Parses a single Python file using the ast module.</p>
+<p>Extracts the module-level docstring, classes, functions, and specially annotated variables,
+formatting them with properties and typing information.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file_path</td>
+<td>str</td>
+<td>Path to the .py file.</td>
+</tr>
+<tr>
+<td>module_name</td>
+<td>str</td>
+<td>Dot-separated module name used for the documentation title.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ModuleDoc</td>
+<td>Module object containing extracted and grouped documentation structures.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="parser-WikinParser-_extract_metadata" class="sub-item" data-name="_extract_metadata" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">_extract_metadata</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_extract_metadata(self, docstring: str, original_name: str)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Extracts Wikin-specific metadata from the module docstring.</p>
+<p>Allows modules to formally override their display name by including a special 
+YAML-like snippet in their root docstring block.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docstring</td>
+<td>str</td>
+<td>The raw module docstring block.</td>
+</tr>
+<tr>
+<td>original_name</td>
+<td>str</td>
+<td>The default dot-separated underlying module name.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tuple</td>
+<td>A tuple mapping <code>(display_name, cleaned_docstring)</code>.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="parser-WikinParser-_process_docstring" class="sub-item" data-name="_process_docstring" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">_process_docstring</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_process_docstring(self, text: Optional[str])</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Parses Google and Numpy style docstrings and converts their sections into Markdown tables.</p>
+<p>This function sequentially detects specific section headers such as <code>Args:</code>, <code>Returns:</code>, and <code>Raises:</code> 
+to dynamically generate strict markdown tables inside the description string.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td>Optional[str]</td>
+<td>The original unformatted docstring representation.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>Flow-processed docstring containing fully constructed Markdown table elements.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="parser-WikinParser-_parse_function" class="sub-item" data-name="_parse_function" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">_parse_function</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">_parse_function(self, node: ast.AST, source: str)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Internal helper to create a FunctionDoc from an AST node.</p>
+<p>Constructs the full function formatting structure, building definitions containing type hints, 
+decorators (<code>@property</code>, <code>@classmethod</code>), async structures, and argument names.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node</td>
+<td>ast.AST</td>
+<td>The AST representation block dictating the function or method footprint.</td>
+</tr>
+<tr>
+<td>source</td>
+<td>str</td>
+<td>Processed full text representation of the file code, used specifically for matching exact inline python 3.8 constraints.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FunctionDoc</td>
+<td>Documented container including function's name wrapper, generated signature path, and attached processed docstring block.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                </div>
+                
+                
+
+                
+
+                
+                
             </section>
-            
-            
             
             
             
         </div>
     </main>
-    <script src="./search_index.js"></script>
+    <script src="../search_index.js"></script>
     <script>
         const searchInput = document.getElementById('wikin-search');
         const resultsDropdown = document.getElementById('search-results');
         const sections = document.querySelectorAll('.doc-section');
         const sidebarItems = document.querySelectorAll('#sidebar-list li');
         
-        const base_url = "./";
+        const base_url = "../";
         const multipage = true;
         let modulesLoaded = false;
         let loadingPromise = null;

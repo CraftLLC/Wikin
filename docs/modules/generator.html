@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.3.1 - Documentation</title>
+    <title>Wikin v1.3.1 - Generator (generator) - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -437,7 +437,7 @@ table {
 <body>
     <aside>
         <div class="brand">
-            <a href="./index.html">Wikin <span class="version">v1.3.1</span></a>
+            <a href="../index.html">Wikin <span class="version">v1.3.1</span></a>
         </div>
         
         
@@ -480,7 +480,7 @@ table {
                 
                 <li>
                     
-                    <a href="./readme.html"
+                    <a href="../readme.html"
                        class="">
                         Readme
                     </a>
@@ -489,8 +489,8 @@ table {
                 
                 <li>
                     
-                    <a href="./license.html"
-                       class="active">
+                    <a href="../license.html"
+                       class="">
                         License
                     </a>
                     
@@ -503,21 +503,21 @@ table {
             <ul id="sidebar-list">
                 
                 <li data-name="CLI Entry Point (__main__)">
-                    <a href="modules/__main__.html" 
+                    <a href="./__main__.html" 
                        class="">
                         CLI Entry Point (__main__)
                     </a>
                 </li>
                 
                 <li data-name="Generator (generator)">
-                    <a href="modules/generator.html" 
-                       class="">
+                    <a href="./generator.html" 
+                       class="active">
                         Generator (generator)
                     </a>
                 </li>
                 
                 <li data-name="Parser (parser)">
-                    <a href="modules/parser.html" 
+                    <a href="./parser.html" 
                        class="">
                         Parser (parser)
                     </a>
@@ -542,54 +542,273 @@ table {
         
         <div id="content-wrapper">
             
-            <section class="doc-section searchable">
+            
+            
+            <section id="generator" class="doc-section" data-name="Generator (generator)">
+                <h2>Module: Generator (generator)</h2>
                 
-                <div class="item" style="border-left: 4px solid var(--primary); margin-bottom: 2rem; background: rgba(99, 102, 241, 0.05);">
-                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 600;">Detected License Properties</div>
-                    <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Type:</strong> <span class="highlight" style="padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600;">MIT License</span></div>
+                
+                
+                
+                <div class="category-header"><h3>Classes</h3></div>
+                
+                <div id="generator-WikinGenerator" class="item" data-name="WikinGenerator">
+                    <div class="item-header">
+                        <div>
+                            <span class="item-name searchable">WikinGenerator</span>
+                            <span class="item-type">class</span>
+                        </div>
+                    </div>
+                    
+                    <div class="item-doc searchable"><p>Generates a premium-look HTML documentation from parsed module data.</p>
+<p>This class handles rendering the parsed Abstract Syntax Tree representation of Python 
+functions and configurations into a Jinja2 template with modern CSS formatting and Javascript 
+indexing for global search support.</p>
+<h4>Attributes</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>project_name</td>
+<td>str</td>
+<td>The generic name of the documented project wrapper.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>str</td>
+<td>The overarching software version of the package.</td>
+</tr>
+<tr>
+<td>config</td>
+<td>dict</td>
+<td>Cached configuration dictionary dynamically loaded via <code>.wikinconfig</code>.</td>
+</tr>
+<tr>
+<td>links</td>
+<td>dict</td>
+<td>Accessible project repository and interface navigational links wrapper.</td>
+</tr>
+<tr>
+<td>multipage</td>
+<td>bool</td>
+<td>Instructs if internal outputs should parse identically out independently generated sub-pages.</td>
+</tr>
+<tr>
+<td>env</td>
+<td>jinja2.Environment</td>
+<td>Central template-loading structure context.</td>
+</tr>
+<tr>
+<td>template</td>
+<td>jinja2.Template</td>
+<td>Resolved loaded Jinja2 primary processing file HTML wrapper.</td>
+</tr>
+</tbody>
+</table></div>
+                    
+                    
+                    
+                    <div id="generator-WikinGenerator-__init__" class="sub-item" data-name="__init__" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">__init__</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">__init__(self, project_name: str, version: str, docs_dir: str=&#39;docs&#39;)</code>
                         
-                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Year:</strong> <code>2026</code></div>
-                        
-                        
-                        <div style="display: flex; align-items: center; gap: 0.8rem;"><strong style="color: var(--text); min-width: 80px;">Author / Owner:</strong> <span style="color: var(--accent); font-weight: 500;">CraftLLC</span></div>
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Initialize the generator with project metadata and configuration.</p>
+<p>This constructor initializes templating attributes, maps specific parsing mechanisms dynamically to Tomli structures, 
+and extracts custom routing commands externally parsed onto <code>.wikinconfig</code>. Contains logic to inject third-party '.wikin' plugin and theme ZIP archives.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>project_name</td>
+<td>str</td>
+<td>Textual explicit descriptor specifying overarching package build scope title.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>str</td>
+<td>The mapped tracking project versioning parameter sequence strings representation.</td>
+</tr>
+<tr>
+<td>docs_dir</td>
+<td>str</td>
+<td>Relative destination override target for generated documentation.</td>
+</tr>
+</tbody>
+</table></div>
                         
                     </div>
+                    
+                    <div id="generator-WikinGenerator-generate" class="sub-item" data-name="generate" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">generate</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">generate(self, modules: List[ModuleDoc], current_module: ModuleDoc=None, current_page: dict=None)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Transforms a list of ModuleDoc objects into an HTML string.</p>
+<p>Generates functional page-spanning document variables alongside specific individual target structures. 
+In dynamically triggered multipage operations, parses independently linked cross-path module references dynamically.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>modules</td>
+<td>List[ModuleDoc]</td>
+<td>Parsed object structures retaining explicit hierarchical function-level context models.</td>
+</tr>
+<tr>
+<td>current_module</td>
+<td>ModuleDoc, optional</td>
+<td>If explicit single page operations are executing dynamically in multiprocessing tasks, denotes isolated file focus string wrappers. Defaults to None.</td>
+</tr>
+<tr>
+<td>current_page</td>
+<td>dict, optional</td>
+<td>Selected custom page output dynamically routing to template rendering engine.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>Substantially compiled raw output Jinja2 mapped HTML component configuration result sequence mapping wrapper.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="generator-WikinGenerator-get_search_data" class="sub-item" data-name="get_search_data" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">get_search_data</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">get_search_data(self, modules: List[ModuleDoc])</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Serializes all module data into a dictionary for global search.</p>
+<p>Retained output is actively exposed within generated individual script templates supporting isolated index-focused contextual filtering logic mapping dependencies matching context instances.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>modules</td>
+<td>List[ModuleDoc]</td>
+<td>Internal configuration structures generated across core abstract parsing elements sequentially parsing module context items linearly stringing parsed entities context paths values dict wrapper targets components structure representations mapping instances lists mappings target instance path elements.</td>
+</tr>
+</tbody>
+</table>
+<h4>Returns</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dict</td>
+<td>Dataclass-converted multi-level structural format mapped indexing dict target search mappings matching variables dict outputs sequence configurations.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
+                    <div id="generator-WikinGenerator-save" class="sub-item" data-name="save" style="margin-left: 1.5rem; margin-top: 1rem; border-left: 2px solid var(--border); padding-left: 1rem;">
+                        <div class="item-header">
+                            <span class="item-name searchable" style="font-size: 0.9rem;">save</span>
+                            <span class="item-type" style="font-size: 0.6rem;">method</span>
+                        </div>
+                        <code class="signature searchable" style="font-size: 0.8rem;">save(self, html: str, output_path: str)</code>
+                        
+                        <div class="item-doc searchable" style="font-size: 0.85rem;"><p>Saves the generated HTML to the specified file path.</p>
+<p>Instantiates any necessary sub-directories and commits rendered index outputs string elements files saving.</p>
+<h4>Args</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>html</td>
+<td>str</td>
+<td>Complete multi-line template output sequence mapping structure.</td>
+</tr>
+<tr>
+<td>output_path</td>
+<td>str</td>
+<td>Relative destination targeting document sequence paths elements file references targets configurations formatting mapped instances target instance mapping path parameter configuration mapping structures mapping strings variables sequence variables string strings properties structure outputs mapped instances output mapped values lists formatting wrappers configuration values structural outputs maps structures templates formatting values strings strings paths configurations contexts contexts values contexts representations context implementations dict references implementations structures context environments objects files representations dependencies components instance mapping targets instances dependencies instance contexts formatting instance templates representations structures implementations values environments targets environments maps context properties paths parameters outputs configurations maps strings structural instances references settings references instance variables targets paths dependencies dependencies wrappers elements targets files elements mappings environments templates variables lists parameters mapping instance formats components strings values strings properties parameters paths paths mapped formats components configurations strings outputs configurations lists strings strings lists dependencies implementations formatting contexts targets environments instances representations formats parameters scripts configurations instances mapped configurations components mapped configurations dict references objects strings environments string variables formatting environments dependencies.</td>
+</tr>
+</tbody>
+</table></div>
+                        
+                    </div>
+                    
                 </div>
                 
-                <p>MIT License</p>
-<p>Copyright (c) 2026 CraftLLC</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
+                
+
+                
+
+                
+                
             </section>
-            
-            
             
             
             
         </div>
     </main>
-    <script src="./search_index.js"></script>
+    <script src="../search_index.js"></script>
     <script>
         const searchInput = document.getElementById('wikin-search');
         const resultsDropdown = document.getElementById('search-results');
         const sections = document.querySelectorAll('.doc-section');
         const sidebarItems = document.querySelectorAll('#sidebar-list li');
         
-        const base_url = "./";
+        const base_url = "../";
         const multipage = true;
         let modulesLoaded = false;
         let loadingPromise = null;

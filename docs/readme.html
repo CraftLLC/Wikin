@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikin v1.3.0 - Documentation</title>
+    <title>Wikin v1.3.1 - Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -427,12 +427,9 @@ table {
     <script>
         (function() {
             const savedTheme = localStorage.getItem('wikin-theme') || "OLED";
-            if (savedTheme !== 'default') {
-                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
-                if (style) {
-                    style.disabled = false;
-                }
-            }
+            document.querySelectorAll('.wikin-theme-style').forEach(s => {
+                s.disabled = (s.getAttribute('data-theme-id') !== savedTheme);
+            });
         })();
     </script>
     
@@ -440,7 +437,7 @@ table {
 <body>
     <aside>
         <div class="brand">
-            <a href="./index.html">Wikin <span class="version">v1.3.0</span></a>
+            <a href="./index.html">Wikin <span class="version">v1.3.1</span></a>
         </div>
         
         
@@ -505,24 +502,24 @@ table {
             
             <ul id="sidebar-list">
                 
-                <li data-name="CLI Entry Point (wikin.__main__)">
-                    <a href="modules/wikin.__main__.html" 
+                <li data-name="CLI Entry Point (__main__)">
+                    <a href="modules/__main__.html" 
                        class="">
-                        CLI Entry Point (wikin.__main__)
+                        CLI Entry Point (__main__)
                     </a>
                 </li>
                 
-                <li data-name="Generator (wikin.generator)">
-                    <a href="modules/wikin.generator.html" 
+                <li data-name="Generator (generator)">
+                    <a href="modules/generator.html" 
                        class="">
-                        Generator (wikin.generator)
+                        Generator (generator)
                     </a>
                 </li>
                 
-                <li data-name="Parser (wikin.parser)">
-                    <a href="modules/wikin.parser.html" 
+                <li data-name="Parser (parser)">
+                    <a href="modules/parser.html" 
                        class="">
-                        Parser (wikin.parser)
+                        Parser (parser)
                     </a>
                 </li>
                 

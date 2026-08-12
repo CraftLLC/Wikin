@@ -419,12 +419,9 @@ HTML_TEMPLATE = r"""
     <script>
         (function() {
             const savedTheme = localStorage.getItem('wikin-theme') || "{{ default_theme_id }}";
-            if (savedTheme !== 'default') {
-                const style = document.querySelector(`.wikin-theme-style[data-theme-id="${savedTheme}"]`);
-                if (style) {
-                    style.disabled = false;
-                }
-            }
+            document.querySelectorAll('.wikin-theme-style').forEach(s => {
+                s.disabled = (s.getAttribute('data-theme-id') !== savedTheme);
+            });
         })();
     </script>
     {% endif %}
